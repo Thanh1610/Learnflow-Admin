@@ -1,0 +1,21 @@
+{
+    "HomePage": {
+      "title": "Welcome to Learnflow Admin!"
+    },
+    "app": {
+      "language": "Change language"
+    },
+    "sidebar": {
+      "home": "Home",
+      "courses": "Courses",
+      "management": "Management",
+      "analytics": "Analytics",
+      "users": "Users",
+      "questions": "Questions",
+      "settings": {
+        "heading": "Settings",
+        "theme": "Theme",
+        "language": "Language"
+      }
+    }
+}

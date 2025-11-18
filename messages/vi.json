@@ -1,0 +1,21 @@
+{
+    "HomePage": {
+      "title": "Chào mừng bạn đến với Learnflow Admin!"
+    },
+    "app": {
+      "language": "Đổi ngôn ngữ"
+    },
+    "sidebar": {
+      "home": "Trang chủ",
+      "courses": "Danh sách khóa học",
+      "management": "Quản lý",
+      "analytics": "Analytics",
+      "users": "Người dùng",
+      "questions": "Câu hỏi",
+      "settings": {
+        "heading": "Cài đặt",
+        "theme": "Giao diện",
+        "language": "Ngôn ngữ"
+      }
+    }
+}
