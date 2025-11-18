@@ -1,4 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Learnflow Admin
+
+Next.js + Prisma + Postgres admin panel. Thực hiện tuần tự các bước dưới đây để chạy dự án.
+
+## Yêu cầu trước khi chạy
+
+1. Cài Node.js 18+.
+2. Tạo hoặc cấp quyền truy cập tới một database Postgres cố định (có host, port, user, password rõ ràng) để dùng cho dự án.
+3. Tạo file `.env` ở thư mục gốc, thêm biến `DATABASE_URL` tương ứng với instance đó và không commit file này lên git.
+
+Mẫu `.env`:
+
+```bash
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/learnflow"
+```
+
+## Cài đặt phụ thuộc
+
+```bash
+npm install
+```
+
+## Thiết lập cơ sở dữ liệu
+
+1. Đảm bảo Postgres trong `DATABASE_URL` đang chạy.
+2. Đẩy schema Prisma:
+
+   ```bash
+   npx prisma db push
+   ```
+
+3. (Tùy chọn) Kiểm tra kết nối:
+
+   ```bash
+   npm run db:test
+   ```
 
 ## Getting Started
 
@@ -34,4 +69,5 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
 # Learnflow-Admin

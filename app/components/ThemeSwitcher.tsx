@@ -1,8 +1,8 @@
 // app/components/ThemeSwitcher.tsx
-'use client'
-import {Switch} from "@heroui/react";
-import {useTheme} from "next-themes";
-import {SVGProps, useEffect, useState} from "react";
+'use client';
+import { Switch } from '@heroui/react';
+import { useTheme } from 'next-themes';
+import { SVGProps, useEffect, useState } from 'react';
 
 export const MoonIcon = (props: SVGProps<SVGSVGElement>) => {
   return (
@@ -43,10 +43,11 @@ export const SunIcon = (props: SVGProps<SVGSVGElement>) => {
 };
 
 export default function ThemeSwitcher() {
-  const {theme, setTheme} = useTheme();
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -54,18 +55,21 @@ export default function ThemeSwitcher() {
     return null;
   }
 
-  const isDark = theme === "dark";
+  const isDark = theme === 'dark';
 
   return (
     <Switch
       isSelected={isDark}
-      onValueChange={(value) => setTheme(value ? "dark" : "light")}
+      onValueChange={value => setTheme(value ? 'dark' : 'light')}
       color="secondary"
       size="lg"
-      thumbIcon={({isSelected, className}) =>
-        isSelected ? <SunIcon className={className} /> : <MoonIcon className={className} />
+      thumbIcon={({ isSelected, className }) =>
+        isSelected ? (
+          <SunIcon className={className} />
+        ) : (
+          <MoonIcon className={className} />
+        )
       }
     />
-     
   );
 }

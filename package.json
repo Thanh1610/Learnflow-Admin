@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "db:test": "tsx scripts/test-database.ts",
+    "db:studio": "prisma studio",
     "prepare": "husky"
   },
   "dependencies": {
@@ -17,6 +19,9 @@
     "@heroui/system": "^2.4.23",
     "@heroui/theme": "^2.4.23",
     "@heroui/use-theme": "^2.1.10",
+    "@prisma/client": "^6.19.0",
+    "@prisma/extension-accelerate": "^2.0.2",
+    "dotenv": "^17.2.3",
     "framer-motion": "^12.23.24",
     "next": "16.0.3",
     "next-themes": "^0.4.6",
@@ -33,7 +38,9 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
+    "prisma": "^6.19.0",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }
