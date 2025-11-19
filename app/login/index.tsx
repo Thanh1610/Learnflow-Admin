@@ -1,7 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@/config/pageRoutes';
-import { Button, Divider, Input, Link } from '@heroui/react';
+import { Button, Input, Link } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Icon } from '@iconify/react';
 import { useTranslations } from 'next-intl';
@@ -127,27 +127,6 @@ export default function LoginForm() {
             {t('login')}
           </Button>
         </form>
-        <div className="flex items-center gap-4 py-2">
-          <Divider className="flex-1" />
-          <p className="text-tiny text-default-500 shrink-0">{t('or')}</p>
-          <Divider className="flex-1" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Button
-            startContent={<Icon icon="flat-color-icons:google" width={24} />}
-            variant="bordered"
-          >
-            {t('signInWithGoogle')}
-          </Button>
-          <Button
-            startContent={
-              <Icon className="text-default-500" icon="fe:github" width={24} />
-            }
-            variant="bordered"
-          >
-            {t('signInWithGithub')}
-          </Button>
-        </div>
         <p className="text-small text-center">
           {t('needAnAccount')}&nbsp;
           <Link href={PAGE_ROUTES.REGISTER} size="sm">
