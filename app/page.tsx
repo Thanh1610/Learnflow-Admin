@@ -2,9 +2,14 @@ import {
   AppSidebarServer,
   DashboardLayout,
 } from '@/app/components/organisms/Sidebar';
+import { metaObject } from '@/config/site.config';
 import prisma from '@/lib/prisma';
 import { Button } from '@heroui/button';
 import { getTranslations } from 'next-intl/server';
+
+export const metadata = {
+  ...metaObject('Home'),
+};
 
 export default async function Home() {
   let users: Array<{

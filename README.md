@@ -7,11 +7,13 @@ Next.js + Prisma + Postgres admin panel. Thực hiện tuần tự các bước 
 1. Cài Node.js 18+.
 2. Tạo hoặc cấp quyền truy cập tới một database Postgres cố định (có host, port, user, password rõ ràng) để dùng cho dự án.
 3. Tạo file `.env` ở thư mục gốc, thêm biến `DATABASE_URL` tương ứng với instance đó và không commit file này lên git.
+4. Khai báo thêm biến `JWT_SECRET` để ký token đăng nhập (ưu tiên chuỗi ngẫu nhiên đủ dài, tối thiểu 32 ký tự).
 
 Mẫu `.env`:
 
 ```bash
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/learnflow"
+JWT_SECRET="change-me-to-a-long-random-string"
 ```
 
 ## Cài đặt phụ thuộc

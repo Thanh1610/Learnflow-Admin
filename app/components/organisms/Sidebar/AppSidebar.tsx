@@ -1,15 +1,18 @@
 'use client';
 
-import { LanguageToggle } from '@/app/components/atoms/Language';
+import AvatarPopover from '@/app/components/molecules/avatarPopover';
 import { MenuItem } from '@/app/components/organisms/Sidebar/menuItems';
-import ThemeSwitcher from '@/app/components/ThemeSwitcher';
+import { useAuthStore } from '@/app/stores/useAuthStore';
 import { cn } from '@/lib/utils';
 import { Sidebar, SidebarItem, useSidebar } from './index';
 
 function SidebarHeader() {
   const { isOpen, isMobile } = useSidebar();
   const isCollapsed = !isOpen && !isMobile;
-
+  const user = useAuthStore(state => state.user);
+  if (!user) {
+    return null;
+  }
   return (
     <div
       className={cn('flex items-center gap-2', isCollapsed && 'justify-center')}
@@ -30,8 +33,7 @@ function SidebarFooter() {
         isCollapsed ? 'justify-center flex-col' : 'justify-start'
       )}
     >
-      <ThemeSwitcher />
-      <LanguageToggle />
+      <AvatarPopover />
     </div>
   );
 }

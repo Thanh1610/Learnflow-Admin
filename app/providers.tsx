@@ -1,9 +1,10 @@
 // app/providers.tsx
-"use client";
+'use client';
 
-import { HeroUIProvider } from "@heroui/react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { useEffect, useState } from "react";
+import { SidebarProvider } from '@/app/components/organisms/Sidebar/SidebarContext';
+import { HeroUIProvider } from '@heroui/react';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [isClient, setIsClient] = useState(false);
@@ -21,7 +22,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         defaultTheme="light"
         enableSystem={false}
       >
-        {children}
+        <SidebarProvider>{children}</SidebarProvider>
       </NextThemesProvider>
     </HeroUIProvider>
   );
