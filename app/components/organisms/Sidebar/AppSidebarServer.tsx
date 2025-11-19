@@ -5,5 +5,5 @@ import { getMenuItems } from './menuItems';
 export async function AppSidebarServer() {
   const locale = await getLocale();
   const menuItems = await getMenuItems(locale);
-  return <AppSidebar initialLocale={locale} menuItems={menuItems} />;
+  return <AppSidebar menuItems={menuItems} />;
 }

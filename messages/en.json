@@ -8,14 +8,17 @@
   "sidebar": {
     "home": "Home",
     "courses": "Courses",
-    "management": "Management",
     "analytics": "Analytics",
-    "users": "Users",
-    "questions": "Questions",
     "settings": {
       "heading": "Settings",
       "theme": "Theme",
       "language": "Language"
+    },
+    "management": {
+      "heading": "Management",
+      "users": "Users",
+      "questions": "Questions",
+      "department": "Department"
     },
     "footer": {
       "profile": "Profile",
@@ -72,6 +75,28 @@
       "confirmPasswordRequired": "Please confirm your password",
       "confirmPasswordMismatch": "Passwords do not match",
       "termsRequired": "You must agree to the terms"
+    }
+  },
+  "DepartmentPage": {
+    "title": "Department List",
+    "description": "Manage your departments",
+    "home": "Home",
+    "department": "Department",
+    "addDepartment": "Add Department",
+    "create": "Add Department",
+    "createDepartment": {
+      "title": "Create Department",
+      "description": "Create a new department",
+      "name": "Name",
+      "namePlaceholder": "Enter the name of the department",
+      "create": "Create",
+      "descriptionPlaceholder": "Enter the description of the department",
+      "createSuccess": "Department created successfully",
+      "createFailed": "Failed to create department",
+      "validation": {
+        "nameRequired": "Name is required",
+        "nameMaxLength": "Name must be at most {max} characters"
+      }
     }
   }
 }

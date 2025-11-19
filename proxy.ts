@@ -1,7 +1,8 @@
+import { PAGE_ROUTES } from '@/config/pageRoutes';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-const publicRoutes = ['/login', '/register'];
+const publicRoutes: string[] = [PAGE_ROUTES.LOGIN, PAGE_ROUTES.REGISTER];
 const publicPrefixes = ['/_next', '/static', '/favicon.ico', '/api/auth'];
 
 export function proxy(request: NextRequest) {
@@ -12,7 +13,7 @@ export function proxy(request: NextRequest) {
   const authToken = request.cookies.get('auth_token')?.value;
 
   if (!isPublicRoute && !authToken) {
-    const loginUrl = new URL('/login', request.url);
+    const loginUrl = new URL(PAGE_ROUTES.LOGIN, request.url);
     return NextResponse.redirect(loginUrl);
   }
 

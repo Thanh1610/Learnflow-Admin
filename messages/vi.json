@@ -8,10 +8,13 @@
   "sidebar": {
     "home": "Trang chủ",
     "courses": "Danh sách khóa học",
-    "management": "Quản lý",
+    "management": {
+      "heading": "Quản lý",
+      "users": "Người dùng",
+      "questions": "Câu hỏi",
+      "department": "Phòng ban"
+    },
     "analytics": "Analytics",
-    "users": "Người dùng",
-    "questions": "Câu hỏi",
     "settings": {
       "heading": "Cài đặt",
       "theme": "Giao diện",
@@ -72,6 +75,28 @@
       "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
       "confirmPasswordMismatch": "Mật khẩu không khớp",
       "termsRequired": "Bạn phải đồng ý với điều khoản"
+    }
+  },
+  "DepartmentPage": {
+    "title": "Danh sách phòng ban",
+    "description": "Quản lý phòng ban",
+    "home": "Trang chủ",
+    "department": "Phòng ban",
+    "addDepartment": "Thêm phòng ban",
+    "create": "Thêm phòng ban",
+    "createDepartment": {
+      "title": "Tạo phòng ban",
+      "description": "Tạo mới phòng ban",
+      "name": "Tên phòng ban",
+      "namePlaceholder": "Nhập tên phòng ban",
+      "create": "Tạo",
+      "descriptionPlaceholder": "Nhập mô tả phòng ban",
+      "createSuccess": "Tạo phòng ban thành công",
+      "createFailed": "Tạo phòng ban thất bại",
+      "validation": {
+        "nameRequired": "Tên phòng ban là bắt buộc",
+        "nameMaxLength": "Tên phòng ban không được vượt quá {max} ký tự"
+      }
     }
   }
 }

@@ -24,6 +24,13 @@ export async function POST(req: Request) {
         { status: 404 }
       );
     }
+    if (!user.password) {
+      console.error('User password hash missing');
+      return NextResponse.json(
+        { success: false, error: 'Invalid credentials' },
+        { status: 401 }
+      );
+    }
     const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
