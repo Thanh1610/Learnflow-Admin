@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
-import { SidebarProvider, useSidebar } from './SidebarContext';
+import { useSidebar } from './SidebarContext';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
   className?: string;
 }
 
-function DashboardLayoutContent({
+export function DashboardLayout({
   children,
   sidebar,
   className,
@@ -34,19 +34,5 @@ function DashboardLayoutContent({
         {children}
       </main>
     </div>
-  );
-}
-
-export function DashboardLayout({
-  children,
-  sidebar,
-  className,
-}: DashboardLayoutProps) {
-  return (
-    <SidebarProvider>
-      <DashboardLayoutContent sidebar={sidebar} className={className}>
-        {children}
-      </DashboardLayoutContent>
-    </SidebarProvider>
   );
 }

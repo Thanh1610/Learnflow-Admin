@@ -20,7 +20,7 @@ export interface MenuItem {
   labelFirst?: boolean;
 }
 
-export async function getMenuItems(): Promise<MenuItem[]> {
+export async function getMenuItems(initialLocale: string): Promise<MenuItem[]> {
   const t = await getTranslations('sidebar');
   return [
     {
@@ -66,7 +66,7 @@ export async function getMenuItems(): Promise<MenuItem[]> {
           labelFirst: true,
         },
         {
-          icon: <LanguageToggle />,
+          icon: <LanguageToggle initialLocale={initialLocale} />,
           label: t('settings.language'),
           labelFirst: true,
         },

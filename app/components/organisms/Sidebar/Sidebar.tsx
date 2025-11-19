@@ -98,23 +98,12 @@ export function Sidebar({ children, header, footer, className }: SidebarProps) {
   // Mobile: Drawer
   if (isMobile) {
     return (
-      <>
-        <Button
-          isIconOnly
-          variant="light"
-          className="fixed top-4 left-4 z-50 md:hidden"
-          onPress={toggle}
-          aria-label="Toggle sidebar"
-        >
-          <PanelLeftOpen className="w-5 h-5" />
-        </Button>
-        <Drawer isOpen={isOpen} onOpenChange={toggle} placement="left">
-          <DrawerContent className="max-w-[280px] [&>button]:hidden">
-            <DrawerHeader className="p-0 hidden">{null}</DrawerHeader>
-            <DrawerBody className="p-0">{sidebarContent}</DrawerBody>
-          </DrawerContent>
-        </Drawer>
-      </>
+      <Drawer isOpen={isOpen} onOpenChange={toggle} placement="left">
+        <DrawerContent className="max-w-[280px] [&>button]:hidden">
+          <DrawerHeader className="p-0 hidden">{null}</DrawerHeader>
+          <DrawerBody className="p-0">{sidebarContent}</DrawerBody>
+        </DrawerContent>
+      </Drawer>
     );
   }
 
@@ -122,7 +111,7 @@ export function Sidebar({ children, header, footer, className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 h-screen z-40 transition-all duration-300',
+        'fixed left-0 top-17 h-[calc(100vh-4rem)] z-40 transition-all duration-300',
         isOpen ? 'w-[280px]' : 'w-[72px]'
       )}
     >

@@ -14,11 +14,17 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import ReactCountryFlag from 'react-country-flag';
 
-export function LanguageToggle() {
+interface LanguageToggleProps {
+  initialLocale: string;
+}
+
+export function LanguageToggle({ initialLocale }: LanguageToggleProps) {
   const router = useRouter();
 
-  const [currentLocale, setCurrentLocale] =
-    useState<string>(getLocaleFromCookie);
+  const fallbackLocale = LANGUAGES[0]?.key ?? 'en';
+  const [currentLocale, setCurrentLocale] = useState<string>(
+    initialLocale ?? getLocaleFromCookie(fallbackLocale)
+  );
 
   const currentLang =
     LANGUAGES.find(l => l.key === currentLocale) || LANGUAGES[0];
