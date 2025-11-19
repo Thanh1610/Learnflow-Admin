@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:test": "tsx scripts/test-database.ts",
     "db:studio": "prisma studio",
+    "db": "sh -c 'trap \"kill 0\" EXIT; yarn dev & yarn db:studio'",
     "prepare": "husky",
     "fix": "eslint . --fix"
   },
