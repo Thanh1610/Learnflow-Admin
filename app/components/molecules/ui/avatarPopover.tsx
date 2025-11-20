@@ -18,6 +18,7 @@ import { LogOut, SettingsIcon, User as UserIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+
 export const UserCard = ({ user }: { user: AuthUser }) => {
   const defaultAvatar = '/image/default_avatar.jpg';
   const clear = useAuthStore(state => state.clear);
@@ -110,7 +111,6 @@ export const UserCard = ({ user }: { user: AuthUser }) => {
 
 export default function AvatarPopover() {
   const user = useAuthStore(state => state.user);
-  console.log(user);
   if (!user) {
     return null;
   }

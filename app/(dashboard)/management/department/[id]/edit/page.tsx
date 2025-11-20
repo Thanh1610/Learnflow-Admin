@@ -1,18 +1,31 @@
 import CardInfo from '@/app/components/molecules/ui/CardInfo';
-import { PAGE_ROUTES } from '@/config/pageRoutes';
-import { metaObject } from '@/config/site.config';
 import { getTranslations } from 'next-intl/server';
+import { PAGE_ROUTES } from '@/config/pageRoutes';
 import DepartmentForm from '@/app/components/organisms/Department/DepartmentForm';
+import { metaObject } from '@/config/site.config';
+import prisma from '@/lib/prisma';
+
 export const metadata = {
-  ...metaObject('Create Department'),
+  ...metaObject('Edit Department'),
 };
-export default async function CreateDepartmentPage() {
+
+export default async function EditDepartmentPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const t = await getTranslations('DepartmentPage');
+  const { id } = await params;
+
+  const department = await prisma.department.findUnique({
+    where: { id: Number(id) },
+  });
+
   return (
     <div className="flex flex-col gap-8">
       <CardInfo
-        title={t('createDepartment.title')}
-        description={t('createDepartment.description')}
+        title={t('editDepartment.title')}
+        description={t('editDepartment.description')}
         breadcrumbs={[
           {
             label: t('home'),
@@ -25,12 +38,16 @@ export default async function CreateDepartmentPage() {
           {
             label: t('createDepartment.title'),
             href: PAGE_ROUTES.CREATE_DEPARTMENT,
+          },
+          {
+            label: t('editDepartment.title'),
+            href: PAGE_ROUTES.EDIT_DEPARTMENT,
             isCurrent: true,
           },
         ]}
       />
       <div className="px-8">
-        <DepartmentForm type="create" />
+        <DepartmentForm type="edit" data={department} />
       </div>
     </div>
   );

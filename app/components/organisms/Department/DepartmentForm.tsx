@@ -24,10 +24,26 @@ import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-export default function CreateDepartmentForm(props: CardProps) {
+type DepartmentFormData = {
+  name: string;
+  description?: string | null;
+};
+
+interface DepartmentFormProps extends CardProps {
+  type: 'create' | 'edit';
+  data?: DepartmentFormData | null;
+}
+
+export default function DepartmentForm({
+  type,
+  data,
+  ...props
+}: DepartmentFormProps) {
   const t = useTranslations('DepartmentPage.createDepartment');
   const schema = useMemo(() => createDepartmentSchema(t), [t]);
   const { createDepartment, isCreating, error } = useCreateDepartment();
+
+  //form schema
   const {
     control,
     handleSubmit,
@@ -35,9 +51,13 @@ export default function CreateDepartmentForm(props: CardProps) {
     reset,
   } = useForm<DepartmentFormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: '', description: '' },
+    defaultValues: {
+      name: data?.name ?? '',
+      description: data?.description ?? '',
+    },
   });
 
+  //submit
   const onSubmit = async (values: DepartmentFormValues) => {
     const response = await createDepartment(values);
     if (response?.success) {
@@ -48,6 +68,9 @@ export default function CreateDepartmentForm(props: CardProps) {
       toast.error(t('createFailed'));
     }
   };
+
+  //loading
+  const isLoading = isCreating || isSubmitting;
 
   return (
     <Card className="w-full" {...props}>
@@ -99,7 +122,7 @@ export default function CreateDepartmentForm(props: CardProps) {
           <Spacer y={6} />
           <Divider />
           <div className="flex w-full flex-wrap-reverse items-center justify-between gap-2 px-4 pt-4 md:flex-wrap">
-            <Button color="primary" type="submit" isLoading={isSubmitting}>
+            <Button color="primary" type="submit" isLoading={isLoading}>
               {t('create')}
             </Button>
           </div>

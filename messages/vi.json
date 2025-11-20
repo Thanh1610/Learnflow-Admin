@@ -3,7 +3,15 @@
     "title": "Chào mừng bạn đến với Learnflow Admin!"
   },
   "app": {
-    "language": "Đổi ngôn ngữ"
+    "language": "Đổi ngôn ngữ",
+    "close": "Đóng",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "view": "Xem",
+    "create": "Tạo",
+    "save": "Lưu"
   },
   "sidebar": {
     "home": "Trang chủ",
@@ -84,6 +92,13 @@
     "department": "Phòng ban",
     "addDepartment": "Thêm phòng ban",
     "create": "Thêm phòng ban",
+    "view": "Xem chi tiết",
+    "edit": "Sửa phòng ban",
+    "delete": "Xóa phòng ban",
+    "confirmDelete": "Bạn có chắc chắn muốn xóa phòng ban này không?",
+    "confirmBulkDelete": "Bạn có chắc chắn muốn xóa {count} phòng ban không?",
+    "deleteSuccess": "Xóa phòng ban thành công",
+    "deleteFailed": "Xóa phòng ban thất bại",
     "createDepartment": {
       "title": "Tạo phòng ban",
       "description": "Tạo mới phòng ban",
@@ -97,6 +112,37 @@
         "nameRequired": "Tên phòng ban là bắt buộc",
         "nameMaxLength": "Tên phòng ban không được vượt quá {max} ký tự"
       }
+    },
+    "editDepartment": {
+      "title": "Sửa phòng ban",
+      "description": "Sửa phòng ban",
+      "name": "Tên phòng ban",
+      "namePlaceholder": "Nhập tên phòng ban",
+      "edit": "Sửa",
+      "descriptionPlaceholder": "Nhập mô tả phòng ban",
+      "editSuccess": "Sửa phòng ban thành công",
+      "editFailed": "Sửa phòng ban thất bại"
     }
+  },
+  "DataTable": {
+    "columns": {
+      "title": "Cột",
+      "id": "ID",
+      "name": "Tên",
+      "description": "Mô tả",
+      "actions": "Thao tác"
+    },
+    "addNew": "Thêm mới",
+    "rowsPerPage": "Số hàng trên trang",
+    "searchPlaceholder": "Tìm kiếm...",
+    "noItemsFound": "Không có dữ liệu",
+    "total": "Tổng",
+    "items": "mục",
+    "allItemsSelected": "Tất cả các mục đã được chọn",
+    "of": "của",
+    "selected": "đã chọn",
+    "bulkDelete": "Xóa các mục đã chọn",
+    "previous": "Trước",
+    "next": "Tiếp"
   }
 }
