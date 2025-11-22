@@ -1,4 +1,4 @@
-import NavBar from '@/app/components/molecules/NavBar';
+import NavBar from '@/app/components/molecules/ui/NavBar';
 import '@/app/globals.css';
 import { siteConfig } from '@/config/site.config';
 import type { Metadata } from 'next';

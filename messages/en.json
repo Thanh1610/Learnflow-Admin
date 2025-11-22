@@ -3,19 +3,30 @@
     "title": "Welcome to Learnflow Admin!"
   },
   "app": {
-    "language": "Change language"
+    "language": "Change language",
+    "close": "Close",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "create": "Create",
+    "save": "Save"
   },
   "sidebar": {
     "home": "Home",
     "courses": "Courses",
-    "management": "Management",
     "analytics": "Analytics",
-    "users": "Users",
-    "questions": "Questions",
     "settings": {
       "heading": "Settings",
       "theme": "Theme",
       "language": "Language"
+    },
+    "management": {
+      "heading": "Management",
+      "users": "Users",
+      "questions": "Questions",
+      "department": "Department"
     },
     "footer": {
       "profile": "Profile",
@@ -73,5 +84,84 @@
       "confirmPasswordMismatch": "Passwords do not match",
       "termsRequired": "You must agree to the terms"
     }
+  },
+  "DepartmentPage": {
+    "title": "Department List",
+    "description": "Manage your departments",
+    "home": "Home",
+    "department": "Department",
+    "addDepartment": "Add Department",
+    "create": "Add Department",
+    "view": "View Details",
+    "edit": "Edit Department",
+    "usersTooltip": "Select users",
+    "delete": "Delete Department",
+    "confirmDelete": "Are you sure you want to delete this department?",
+    "confirmBulkDelete": "Are you sure you want to delete {count} departments?",
+    "deleteSuccess": "Department deleted successfully",
+    "deleteFailed": "Failed to delete department",
+    "status": "Status",
+    "isPublic": "Public",
+    "isPrivate": "Private",
+    "createDepartment": {
+      "title": "Create Department",
+      "description": "Create a new department",
+      "name": "Name",
+      "namePlaceholder": "Enter the name of the department",
+      "create": "Create",
+      "saveChanges": "Save Changes",
+      "descriptionPlaceholder": "Enter the description of the department",
+      "createSuccess": "Department created successfully",
+      "createFailed": "Failed to create department",
+      "validation": {
+        "nameRequired": "Name is required",
+        "nameMaxLength": "Name must be at most {max} characters"
+      }
+    },
+    "editDepartment": {
+      "title": "Edit Department",
+      "description": "Edit the department",
+      "name": "Name",
+      "namePlaceholder": "Enter the name of the department",
+      "edit": "Edit",
+      "descriptionPlaceholder": "Enter the description of the department",
+      "editSuccess": "Department edited successfully",
+      "editFailed": "Failed to edit department",
+      "usersTitle": "Manage users",
+      "usersDescription": "Manage users in the department",
+      "publicDepartmentMessage": "Public departments cannot have users added manually. All users can access public departments."
+    },
+    "usersNotInDepartment": "Users not in department",
+    "usersNotInDepartmentPlaceholder": "Select users to add to department",
+    "loading": "Loading...",
+    "addUsers": "Add Users",
+    "addUsersSuccess": "Successfully added {count} user(s) to department",
+    "addUsersFailed": "Failed to add users to department",
+    "removeUserSuccess": "Successfully removed {count} user(s) from department",
+    "removeUserFailed": "Failed to remove user from department"
+  },
+  "DataTable": {
+    "columns": {
+      "title": "Columns",
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "actions": "Actions",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "isPublic": "Is Public"
+    },
+    "addNew": "Add New",
+    "rowsPerPage": "Rows per page",
+    "searchPlaceholder": "Search...",
+    "noItemsFound": "No items found",
+    "total": "Total",
+    "items": "items",
+    "allItemsSelected": "All items selected",
+    "of": "of",
+    "selected": "selected",
+    "bulkDelete": "Delete selected",
+    "previous": "Previous",
+    "next": "Next"
   }
 }

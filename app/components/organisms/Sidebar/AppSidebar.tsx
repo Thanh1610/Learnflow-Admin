@@ -1,6 +1,6 @@
 'use client';
 
-import AvatarPopover from '@/app/components/molecules/avatarPopover';
+import AvatarPopover from '@/app/components/molecules/ui/avatarPopover';
 import { MenuItem } from '@/app/components/organisms/Sidebar/menuItems';
 import { useAuthStore } from '@/app/stores/useAuthStore';
 import { cn } from '@/lib/utils';

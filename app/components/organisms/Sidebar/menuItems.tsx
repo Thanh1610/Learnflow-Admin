@@ -1,7 +1,9 @@
 import { LanguageToggle } from '@/app/components/atoms/Language';
 import ThemeSwitcher from '@/app/components/ThemeSwitcher';
+import { PAGE_ROUTES } from '@/config/pageRoutes';
 import {
   BarChart,
+  Building,
   FileText,
   HelpCircle,
   Home,
@@ -11,7 +13,6 @@ import {
 } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { ReactElement } from 'react';
-
 export interface MenuItem {
   href?: string;
   icon?: ReactElement;
@@ -36,17 +37,22 @@ export async function getMenuItems(initialLocale: string): Promise<MenuItem[]> {
     {
       href: '/management',
       icon: <Monitor className="w-5 h-5" />,
-      label: t('management'),
+      label: t('management.heading'),
       items: [
         {
           href: '/management/users',
           icon: <Users className="w-5 h-5" />,
-          label: t('users'),
+          label: t('management.users'),
         },
         {
           href: '/management/questions',
           icon: <HelpCircle className="w-5 h-5" />,
-          label: t('questions'),
+          label: t('management.questions'),
+        },
+        {
+          href: PAGE_ROUTES.DEPARTMENT_LIST,
+          icon: <Building className="w-5 h-5" />,
+          label: t('management.department'),
         },
       ],
     },
