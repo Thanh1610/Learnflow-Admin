@@ -94,17 +94,22 @@
     "create": "Thêm phòng ban",
     "view": "Xem chi tiết",
     "edit": "Sửa phòng ban",
+    "usersTooltip": "Chọn người dùng",
     "delete": "Xóa phòng ban",
     "confirmDelete": "Bạn có chắc chắn muốn xóa phòng ban này không?",
     "confirmBulkDelete": "Bạn có chắc chắn muốn xóa {count} phòng ban không?",
     "deleteSuccess": "Xóa phòng ban thành công",
     "deleteFailed": "Xóa phòng ban thất bại",
+    "isPublic": "Công khai",
+    "isPrivate": "Riêng tư",
+    "status": "Trạng thái",
     "createDepartment": {
       "title": "Tạo phòng ban",
       "description": "Tạo mới phòng ban",
       "name": "Tên phòng ban",
       "namePlaceholder": "Nhập tên phòng ban",
       "create": "Tạo",
+      "saveChanges": "Lưu thay đổi",
       "descriptionPlaceholder": "Nhập mô tả phòng ban",
       "createSuccess": "Tạo phòng ban thành công",
       "createFailed": "Tạo phòng ban thất bại",
@@ -121,8 +126,19 @@
       "edit": "Sửa",
       "descriptionPlaceholder": "Nhập mô tả phòng ban",
       "editSuccess": "Sửa phòng ban thành công",
-      "editFailed": "Sửa phòng ban thất bại"
-    }
+      "editFailed": "Sửa phòng ban thất bại",
+      "usersTitle": "Quản lý người dùng",
+      "usersDescription": "Quản lý người dùng phòng ban",
+      "publicDepartmentMessage": "Phòng ban công khai không thể thêm người dùng thủ công. Tất cả người dùng đều có thể truy cập phòng ban công khai."
+    },
+    "usersNotInDepartment": "Người dùng chưa trong phòng ban",
+    "usersNotInDepartmentPlaceholder": "Chọn người dùng để thêm vào phòng ban",
+    "loading": "Đang tải...",
+    "addUsers": "Thêm người dùng",
+    "addUsersSuccess": "Đã thêm {count} người dùng vào phòng ban thành công",
+    "addUsersFailed": "Thêm người dùng vào phòng ban thất bại",
+    "removeUserSuccess": "Đã xóa {count} người dùng khỏi phòng ban thành công",
+    "removeUserFailed": "Xóa người dùng khỏi phòng ban thất bại"
   },
   "DataTable": {
     "columns": {
@@ -130,7 +146,10 @@
       "id": "ID",
       "name": "Tên",
       "description": "Mô tả",
-      "actions": "Thao tác"
+      "actions": "Thao tác",
+      "createdAt": "Ngày tạo",
+      "updatedAt": "Ngày cập nhật",
+      "isPublic": "Công khai"
     },
     "addNew": "Thêm mới",
     "rowsPerPage": "Số hàng trên trang",

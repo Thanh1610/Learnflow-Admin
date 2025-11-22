@@ -8,8 +8,7 @@ export type BreadcrumbConfig = {
   isCurrent?: boolean;
 };
 
-const breadcrumbVariants = ['solid', 'bordered', 'light'] as const;
-type BreadcrumbVariant = (typeof breadcrumbVariants)[number];
+type BreadcrumbVariant = 'solid' | 'bordered' | 'light';
 
 type HeroBreadcrumbsProps = React.ComponentProps<typeof HeroBreadcrumbs>;
 

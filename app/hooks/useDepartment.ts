@@ -1,7 +1,6 @@
 import { fetcher } from '@/lib/fetcher';
-import { DepartmentFormValues } from '@/schema/department.schema';
-import useSWRMutation from 'swr/mutation';
 import { mutate } from 'swr';
+import useSWRMutation from 'swr/mutation';
 
 const DEPARTMENT_LIST_KEY = '/api/department/list';
 
@@ -11,6 +10,7 @@ export type DepartmentResponse = {
     id: string;
     name: string;
     description: string;
+    isPublic?: boolean;
   };
 };
 
@@ -28,26 +28,35 @@ export type BulkDeletePayload = {
 export type CreateDepartmentPayload = {
   name: string;
   description: string;
+  isPublic: boolean;
+};
+export type UpdateDepartmentPayload = {
+  id: number;
+  name: string;
+  description: string;
+  isPublic: boolean;
 };
 export const useCreateDepartment = () => {
   const {
     trigger,
     isMutating,
     error: swrError,
-  } = useSWRMutation<DepartmentResponse, Error, string, DepartmentFormValues>(
-    '/api/department/create',
-    async (_key, { arg }) => {
-      const response = await fetcher<DepartmentResponse, DepartmentFormValues>(
-        '/api/department/create',
-        {
-          method: 'POST',
-          body: arg,
-        }
-      );
-      mutate(DEPARTMENT_LIST_KEY);
-      return response;
-    }
-  );
+  } = useSWRMutation<
+    DepartmentResponse,
+    Error,
+    string,
+    CreateDepartmentPayload
+  >('/api/department/create', async (_key, { arg }) => {
+    const response = await fetcher<DepartmentResponse, CreateDepartmentPayload>(
+      '/api/department/create',
+      {
+        method: 'POST',
+        body: arg,
+      }
+    );
+    mutate(DEPARTMENT_LIST_KEY);
+    return response;
+  });
 
   const {
     trigger: deleteDepartment,
@@ -83,6 +92,27 @@ export const useCreateDepartment = () => {
       return response;
     }
   );
+
+  const {
+    trigger: updateDepartment,
+    isMutating: isUpdating,
+    error: updateError,
+  } = useSWRMutation<
+    DepartmentResponse,
+    Error,
+    string,
+    UpdateDepartmentPayload
+  >('/api/department/[id]/updateDepartmentById', async (_key, { arg }) => {
+    const response = await fetcher<DepartmentResponse, UpdateDepartmentPayload>(
+      `/api/department/${arg.id}/updateDepartmentById`,
+      {
+        method: 'PUT',
+        body: arg,
+      }
+    );
+    mutate(DEPARTMENT_LIST_KEY);
+    return response;
+  });
   return {
     //create
     createDepartment: trigger,
@@ -96,5 +126,10 @@ export const useCreateDepartment = () => {
     bulkDeleteDepartments,
     isBulkDeleting,
     bulkDeleteError,
+
+    //update
+    updateDepartment,
+    isUpdating,
+    updateError,
   };
 };

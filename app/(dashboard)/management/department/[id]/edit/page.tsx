@@ -1,9 +1,9 @@
 import CardInfo from '@/app/components/molecules/ui/CardInfo';
-import { getTranslations } from 'next-intl/server';
-import { PAGE_ROUTES } from '@/config/pageRoutes';
 import DepartmentForm from '@/app/components/organisms/Department/DepartmentForm';
+import { getDepartmentById } from '@/app/hooks/serverHooks/useDepartment';
+import { PAGE_ROUTES } from '@/config/pageRoutes';
 import { metaObject } from '@/config/site.config';
-import prisma from '@/lib/prisma';
+import { getTranslations } from 'next-intl/server';
 
 export const metadata = {
   ...metaObject('Edit Department'),
@@ -17,9 +17,7 @@ export default async function EditDepartmentPage({
   const t = await getTranslations('DepartmentPage');
   const { id } = await params;
 
-  const department = await prisma.department.findUnique({
-    where: { id: Number(id) },
-  });
+  const department = await getDepartmentById(id);
 
   return (
     <div className="flex flex-col gap-8">

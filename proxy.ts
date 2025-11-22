@@ -1,4 +1,5 @@
 import { PAGE_ROUTES } from '@/config/pageRoutes';
+import { checkRole } from '@/lib/middleware/checkRole';
 import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_ENDPOINT,
@@ -65,6 +66,14 @@ export async function proxy(request: NextRequest) {
     const redirectResponse = NextResponse.redirect(loginUrl);
     appendCookies(redirectResponse, refreshedCookies);
     return redirectResponse;
+  }
+
+  if (isApiRoute && hasAuthToken) {
+    const roleGuardResponse = checkRole(request);
+    if (roleGuardResponse) {
+      appendCookies(roleGuardResponse, refreshedCookies);
+      return roleGuardResponse;
+    }
   }
 
   const response = NextResponse.next();

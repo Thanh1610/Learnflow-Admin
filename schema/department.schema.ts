@@ -2,10 +2,9 @@ import { z } from 'zod';
 
 export const DEPARTMENT_MAX_LENGTH = 50;
 
-type TranslationFunction = (
-  key: string,
-  values?: Record<string, any>
-) => string;
+type TranslationValues = Record<string, string | number | Date>;
+
+type TranslationFunction = (key: string, values?: TranslationValues) => string;
 
 export const createDepartmentSchema = (t: TranslationFunction) => {
   return z.object({

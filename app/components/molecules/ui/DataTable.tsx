@@ -14,10 +14,17 @@ import {
   TableHeader,
   TableRow,
 } from '@heroui/react';
-import React from 'react';
 import { useTranslations } from 'next-intl';
+import type { SVGProps } from 'react';
+import React from 'react';
 
 // Types
+type DataRow = Record<string, unknown> & { id?: string | number };
+
+interface IconProps extends SVGProps<SVGSVGElement> {
+  size?: number;
+}
+
 export interface Column {
   name: string;
   uid: string;
@@ -28,7 +35,7 @@ export interface Column {
   searchable?: boolean; // Whether this column can be searched (default: true for non-action columns)
 }
 
-export interface DataTableProps<T = any> {
+export interface DataTableProps<T extends DataRow = DataRow> {
   columns: Column[];
   data: T[];
   initialVisibleColumns?: string[];
@@ -37,7 +44,6 @@ export interface DataTableProps<T = any> {
   renderCell?: (item: T, columnKey: string) => React.ReactNode;
   renderActions?: (item: T) => React.ReactNode;
   onAddNew?: () => void;
-  onAction?: (action: string, item: T) => void;
   onRowClick?: (item: T) => void;
   onBulkDelete?: (selectedItems: T[]) => void;
   searchKeys?: string[];
@@ -51,26 +57,23 @@ export function capitalize(s: string) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : '';
 }
 
-export const PlusIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}: {
-  size?: number;
-  width?: any;
-  height?: any;
-  [key: string]: any;
-}) => {
+const defaultGetRowKey = <T extends DataRow>(item: T): string | number => {
+  if (typeof item.id === 'string' || typeof item.id === 'number') {
+    return item.id;
+  }
+  return JSON.stringify(item);
+};
+
+export const PlusIcon = ({ size = 24, ...props }: IconProps) => {
   return (
     <svg
       aria-hidden="true"
       fill="none"
       focusable="false"
-      height={size || height}
+      height={size || props.height}
       role="presentation"
       viewBox="0 0 24 24"
-      width={size || width}
+      width={size || props.width}
       {...props}
     >
       <g
@@ -87,26 +90,16 @@ export const PlusIcon = ({
   );
 };
 
-export const VerticalDotsIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}: {
-  size?: number;
-  width?: any;
-  height?: any;
-  [key: string]: any;
-}) => {
+export const VerticalDotsIcon = ({ size = 24, ...props }: IconProps) => {
   return (
     <svg
       aria-hidden="true"
       fill="none"
       focusable="false"
-      height={size || height}
+      height={size || props.height}
       role="presentation"
       viewBox="0 0 24 24"
-      width={size || width}
+      width={size || props.width}
       {...props}
     >
       <path
@@ -117,7 +110,7 @@ export const VerticalDotsIcon = ({
   );
 };
 
-export const SearchIcon = (props: any) => {
+export const SearchIcon = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       aria-hidden="true"
@@ -147,26 +140,16 @@ export const SearchIcon = (props: any) => {
   );
 };
 
-export const TrashIcon = ({
-  size = 20,
-  width,
-  height,
-  ...props
-}: {
-  size?: number;
-  width?: any;
-  height?: any;
-  [key: string]: any;
-}) => {
+export const TrashIcon = ({ size = 20, ...props }: IconProps) => {
   return (
     <svg
       aria-hidden="true"
       fill="none"
       focusable="false"
-      height={size || height}
+      height={size || props.height}
       role="presentation"
       viewBox="0 0 24 24"
-      width={size || width}
+      width={size || props.width}
       {...props}
     >
       <path
@@ -218,25 +201,36 @@ export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }) => {
   );
 };
 
-export default function DataTable<T = any>({
+export default function DataTable<T extends DataRow = DataRow>({
   columns,
   data,
   initialVisibleColumns,
-  searchPlaceholder = useTranslations('DataTable')('searchPlaceholder'),
-  emptyContent = useTranslations('DataTable')('noItemsFound'),
+  searchPlaceholder,
+  emptyContent,
   renderCell: customRenderCell,
   renderActions,
   onAddNew,
   onBulkDelete,
-  onAction,
   onRowClick,
   searchKeys = [],
   rowsPerPageOptions = [5, 10, 15],
   defaultRowsPerPage = 5,
-  getRowKey = (item: any) => (item as any).id,
+  getRowKey = defaultGetRowKey,
   showCheckBox = true,
 }: DataTableProps<T>) {
   const tDataTable = useTranslations('DataTable');
+  const resolvedSearchPlaceholder =
+    searchPlaceholder ?? tDataTable('searchPlaceholder');
+  const resolvedEmptyContent = emptyContent ?? tDataTable('noItemsFound');
+  const normalizedData = React.useMemo(() => {
+    if (Array.isArray(data)) {
+      return data;
+    }
+    console.warn(
+      'DataTable received non-array data. Falling back to empty list.'
+    );
+    return [] as T[];
+  }, [data]);
   // Auto-calculate initialVisibleColumns from columns if not provided
   const computedInitialVisibleColumns = React.useMemo(() => {
     if (initialVisibleColumns) return initialVisibleColumns;
@@ -308,12 +302,12 @@ export default function DataTable<T = any>({
   }, [visibleColumns, columns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredData = [...data];
+    let filteredData = [...normalizedData];
 
     if (hasSearchFilter) {
       filteredData = filteredData.filter(item => {
         return computedSearchKeys.some(key => {
-          const value = (item as any)[key];
+          const value = item[key];
           if (value === null || value === undefined) return false;
           return String(value)
             .toLowerCase()
@@ -323,7 +317,7 @@ export default function DataTable<T = any>({
     }
 
     return filteredData;
-  }, [data, filterValue, computedSearchKeys]);
+  }, [computedSearchKeys, filterValue, hasSearchFilter, normalizedData]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1;
 
@@ -336,9 +330,24 @@ export default function DataTable<T = any>({
 
   const sortedItems = React.useMemo(() => {
     return [...items].sort((a, b) => {
-      const first = (a as any)[sortDescriptor.column];
-      const second = (b as any)[sortDescriptor.column];
-      const cmp = first < second ? -1 : first > second ? 1 : 0;
+      const firstValue = a[sortDescriptor.column];
+      const secondValue = b[sortDescriptor.column];
+
+      const normalizedFirst =
+        firstValue === null || firstValue === undefined
+          ? ''
+          : String(firstValue);
+      const normalizedSecond =
+        secondValue === null || secondValue === undefined
+          ? ''
+          : String(secondValue);
+
+      const cmp =
+        normalizedFirst < normalizedSecond
+          ? -1
+          : normalizedFirst > normalizedSecond
+            ? 1
+            : 0;
 
       return sortDescriptor.direction === 'descending' ? -cmp : cmp;
     });
@@ -346,7 +355,7 @@ export default function DataTable<T = any>({
 
   const defaultRenderCell = React.useCallback(
     (item: T, columnKey: string) => {
-      const cellValue = (item as any)[columnKey];
+      const cellValue = item[columnKey];
 
       // Handle actions column
       if (columnKey === 'actions') {
@@ -356,12 +365,26 @@ export default function DataTable<T = any>({
       }
 
       // Default: just render the cell value
-      return cellValue;
+      if (
+        cellValue === null ||
+        typeof cellValue === 'string' ||
+        typeof cellValue === 'number' ||
+        typeof cellValue === 'boolean'
+      ) {
+        return cellValue as React.ReactNode;
+      }
+
+      if (typeof cellValue === 'object') {
+        return JSON.stringify(cellValue);
+      }
+
+      return null;
     },
     [renderActions]
   );
 
-  const renderCell = customRenderCell || defaultRenderCell;
+  const renderCell: (item: T, columnKey: string) => React.ReactNode =
+    customRenderCell ?? defaultRenderCell;
 
   const selectedItems = React.useMemo(() => {
     if (selectedKeys === 'all') {
@@ -418,11 +441,11 @@ export default function DataTable<T = any>({
   const topContent = React.useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+        <div className="flex items-end justify-between gap-3">
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
-            placeholder={searchPlaceholder}
+            placeholder={resolvedSearchPlaceholder}
             startContent={<SearchIcon />}
             value={filterValue}
             onClear={() => onClear()}
@@ -470,14 +493,14 @@ export default function DataTable<T = any>({
             )}
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <span className="text-default-400 text-small">
             {tDataTable('total')} {filteredItems.length} {tDataTable('items')}
           </span>
-          <label className="flex items-center text-default-400 text-small">
+          <label className="text-default-400 text-small flex items-center">
             {tDataTable('rowsPerPage')}:
             <select
-              className="bg-transparent outline-solid outline-transparent text-default-400 text-small"
+              className="text-default-400 text-small bg-transparent outline-transparent outline-solid"
               onChange={onRowsPerPageChange}
               value={rowsPerPage}
             >
@@ -492,17 +515,18 @@ export default function DataTable<T = any>({
       </div>
     );
   }, [
-    filterValue,
-    visibleColumns,
-    onRowsPerPageChange,
-    filteredItems.length,
-    onSearchChange,
-    hasSearchFilter,
-    searchPlaceholder,
     columns,
+    filteredItems.length,
+    filterValue,
     onAddNew,
+    onClear,
+    onRowsPerPageChange,
+    onSearchChange,
+    resolvedSearchPlaceholder,
     rowsPerPage,
     rowsPerPageOptions,
+    tDataTable,
+    visibleColumns,
   ]);
 
   const bottomContent = React.useMemo(() => {
@@ -522,8 +546,8 @@ export default function DataTable<T = any>({
       (selectedKeys instanceof Set && selectedKeys.size > 0);
 
     return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <div className="w-[30%] flex items-center gap-2 text-small text-default-400">
+      <div className="flex items-center justify-between px-2 py-2">
+        <div className="text-small text-default-400 flex w-[30%] items-center gap-2">
           {showCheckBox && (
             <>
               <span>{selectionText}</span>
@@ -551,7 +575,7 @@ export default function DataTable<T = any>({
           total={pages}
           onChange={setPage}
         />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
+        <div className="hidden w-[30%] justify-end gap-2 sm:flex">
           <Button
             isDisabled={pages === 1}
             size="sm"
@@ -650,7 +674,7 @@ export default function DataTable<T = any>({
           );
         }}
       </TableHeader>
-      <TableBody emptyContent={emptyContent} items={sortedItems}>
+      <TableBody emptyContent={resolvedEmptyContent} items={sortedItems}>
         {item => (
           <TableRow key={getRowKey(item)}>
             {columnKey => {

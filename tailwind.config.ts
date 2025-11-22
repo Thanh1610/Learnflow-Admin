@@ -6,7 +6,7 @@ import { heroUiThemes } from './app/theme/herouiThemes';
 module.exports = {
   content: [
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@heroui/theme/dist/components/(button|dropdown|input|listbox|navbar|popover|toggle|toast|ripple|spinner|menu|divider|form).js',
+    './node_modules/@heroui/theme/dist/components/(avatar|button|checkbox|chip|dropdown|input|listbox|navbar|popover|select|toggle|toast|ripple|spinner|form|menu|divider|scroll-shadow).js',
   ],
   theme: {
     extend: {},
