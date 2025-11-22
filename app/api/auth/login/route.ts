@@ -1,7 +1,7 @@
-import prisma from '@/lib/prisma';
+import { hasura } from '@/lib/hasura';
+import { signToken } from '@/lib/jwt';
 import { compare } from 'bcryptjs';
 import { randomBytes } from 'crypto';
-import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
 const ACCESS_TOKEN_MAX_AGE_SECONDS = 15 * 60; // 15 minutes
@@ -17,13 +17,59 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
+    // Tìm user theo email (chỉ user chưa bị xóa) và lấy tất cả thông tin cần thiết trong một query
+    // Đảm bảo email là string và trim
+    const emailString = String(email).trim().toLowerCase();
+
+    // Escape string cho GraphQL (tạm thời dùng inline string để bypass bug Hasura DDN với String type)
+    const escapedEmail = JSON.stringify(emailString);
+
+    const findUserQuery = `
+      query FindUserForLogin {
+        user(where: { _and: [{ email: { _eq: ${escapedEmail} } }, { deletedAt: { _is_null: true } }] }) {
+          id
+          email
+          name
+          role
+          password
+        }
+      }
+    `;
+
+    console.log('Step 1: Finding user by email:', emailString);
+    const userResult = await hasura<{
+      user: Array<{
+        id: number;
+        email: string;
+        name: string | null;
+        role: string;
+        password: string | null;
+      }>;
+    }>(findUserQuery);
+    console.log('Step 1 result:', {
+      ...userResult,
+      user: userResult.user?.map(u => ({
+        ...u,
+        password: u.password ? '***' : null,
+      })),
+    });
+
+    if (!userResult.user || userResult.user.length === 0) {
+      console.log('User not found');
       return NextResponse.json(
         { success: false, error: 'User not found' },
         { status: 404 }
       );
     }
+
+    const user = userResult.user[0];
+    console.log('User found:', {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    });
+
     if (!user.password) {
       console.error('User password hash missing');
       return NextResponse.json(
@@ -31,6 +77,7 @@ export async function POST(req: Request) {
         { status: 401 }
       );
     }
+
     const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
@@ -38,51 +85,55 @@ export async function POST(req: Request) {
         { status: 401 }
       );
     }
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      console.error('JWT_SECRET is not configured');
-      return NextResponse.json(
-        { success: false, error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
 
-    const token = jwt.sign(
+    // Tạo access token
+    const token = signToken(
       {
         sub: user.id,
         email: user.email,
         role: user.role,
       },
-      secret,
-      { expiresIn: ACCESS_TOKEN_MAX_AGE_SECONDS }
+      ACCESS_TOKEN_MAX_AGE_SECONDS
     );
 
     const refreshToken = randomBytes(48).toString('hex');
     const refreshTokenExpiresAt = new Date(
       Date.now() + REFRESH_TOKEN_MAX_AGE_SECONDS * 1000
-    );
+    ).toISOString();
 
-    // Cập nhật refresh token vào database
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        refreshToken,
-        refreshTokenExpiresAt,
-      },
-    });
+    // Cập nhật refresh token vào database bằng Hasura mutation
+    const escapedRefreshToken = JSON.stringify(refreshToken);
+    const escapedExpiresAt = JSON.stringify(refreshTokenExpiresAt);
+    const updateUserMutation = `
+      mutation UpdateUserRefreshToken {
+        updateUserById(
+          keyId: ${user.id}
+          updateColumns: {
+            refreshToken: { set: ${escapedRefreshToken} }
+            refreshTokenExpiresAt: { set: ${escapedExpiresAt} }
+          }
+        ) {
+          returning {
+            id
+          }
+        }
+      }
+    `;
+
+    try {
+      await hasura(updateUserMutation);
+    } catch (updateError) {
+      console.error('Failed to update refresh token:', updateError);
+      // Continue even if update fails - token is still generated
+    }
 
     // Exclude sensitive fields from user object
-    const {
-      password: _password,
-      refreshToken: _refreshToken,
-      refreshTokenExpiresAt: _refreshTokenExpiresAt,
-      ...publicUser
-    } = user;
-
-    // Explicitly acknowledge stripped fields to satisfy lint rules
-    void _password;
-    void _refreshToken;
-    void _refreshTokenExpiresAt;
+    const publicUser = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    };
 
     const response = NextResponse.json(
       {
@@ -112,6 +163,25 @@ export async function POST(req: Request) {
     return response;
   } catch (error) {
     console.error('Error logging in:', error);
-    return NextResponse.json({ error: 'Failed to login' }, { status: 500 });
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Failed to login',
+          details:
+            process.env.NODE_ENV === 'development' ? error.message : undefined,
+        },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to login',
+      },
+      { status: 500 }
+    );
   }
 }

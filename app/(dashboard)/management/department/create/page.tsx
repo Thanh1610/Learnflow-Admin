@@ -1,8 +1,8 @@
-import CardInfo from '@/app/components/molecules/CardInfo';
+import CardInfo from '@/app/components/molecules/ui/CardInfo';
 import { PAGE_ROUTES } from '@/config/pageRoutes';
 import { metaObject } from '@/config/site.config';
 import { getTranslations } from 'next-intl/server';
-import CreateDepartmentForm from './index';
+import DepartmentForm from '@/app/components/organisms/Department/DepartmentForm';
 export const metadata = {
   ...metaObject('Create Department'),
 };
@@ -30,7 +30,7 @@ export default async function CreateDepartmentPage() {
         ]}
       />
       <div className="px-8">
-        <CreateDepartmentForm />
+        <DepartmentForm type="create" />
       </div>
     </div>
   );

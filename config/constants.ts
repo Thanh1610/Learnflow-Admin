@@ -10,3 +10,10 @@ export const LANGUAGES = [
     countryCode: 'VN',
   },
 ] as const;
+
+export const LOCALE_TIMEZONE_MAP: Record<string, string> = {
+  vi: 'Asia/Ho_Chi_Minh',
+  'vi-VN': 'Asia/Ho_Chi_Minh',
+  en: 'UTC',
+  'en-US': 'America/New_York',
+};

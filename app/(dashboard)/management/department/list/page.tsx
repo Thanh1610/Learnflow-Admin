@@ -1,14 +1,18 @@
-import DepartmentRightContent from '@/app/components/atoms/department/DepartmentRightContent';
-import CardInfo from '@/app/components/molecules/CardInfo';
-import DataTable from '@/app/components/molecules/DataTable';
+import CardInfo from '@/app/components/molecules/ui/CardInfo';
+import { getAllDepartments } from '@/app/hooks/serverHooks/useDepartment';
 import { PAGE_ROUTES } from '@/config/pageRoutes';
 import { metaObject } from '@/config/site.config';
 import { getTranslations } from 'next-intl/server';
+import DepartmentTableWrapper from './index';
+
 export const metadata = {
   ...metaObject('Department List'),
 };
+
 export default async function DepartmentPage() {
   const t = await getTranslations('DepartmentPage');
+
+  const data = await getAllDepartments();
   return (
     <div className="flex flex-col gap-8">
       <CardInfo
@@ -25,10 +29,9 @@ export default async function DepartmentPage() {
             isCurrent: true,
           },
         ]}
-        rightContent={<DepartmentRightContent />}
       />
       <div className="px-8">
-        <DataTable />
+        <DepartmentTableWrapper data={data} />
       </div>
     </div>
   );
