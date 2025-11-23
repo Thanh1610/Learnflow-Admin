@@ -2,6 +2,8 @@ import { fetcher } from '@/lib/fetcher';
 import { User } from '@/types/user.type';
 import useSWR from 'swr';
 
+export type { User };
+
 type UsersInDepartmentResponse = {
   success: boolean;
   data: User[];
