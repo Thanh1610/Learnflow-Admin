@@ -69,7 +69,7 @@ export default function LoginForm() {
     }
   });
   return (
-    <div className="flex h-full w-full items-center justify-center mt-[68px]">
+    <div className="mt-[68px] flex h-full w-full items-center justify-center">
       <div className="rounded-large flex w-full max-w-sm flex-col gap-4">
         <div className="flex flex-col items-center pb-6">
           <AcmeLogo />
@@ -113,11 +113,6 @@ export default function LoginForm() {
             variant="bordered"
             {...register('password')}
           />
-          <div className="flex w-full items-center justify-end px-1 py-2">
-            <Link className="text-default-500" href="#" size="sm">
-              {t('forgotPassword')}
-            </Link>
-          </div>
           <Button
             className="w-full"
             color="primary"

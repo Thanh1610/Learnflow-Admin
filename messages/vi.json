@@ -85,6 +85,13 @@
       "termsRequired": "Bạn phải đồng ý với điều khoản"
     }
   },
+  "UsersPage": {
+    "title": "Danh sách người dùng",
+    "description": "Quản lý tất cả người dùng trong hệ thống",
+    "home": "Trang chủ",
+    "users": "Người dùng",
+    "comingSoon": "Nội dung quản lý người dùng sẽ sớm được cập nhật..."
+  },
   "DepartmentPage": {
     "title": "Danh sách phòng ban",
     "description": "Quản lý phòng ban",
@@ -163,5 +170,156 @@
     "bulkDelete": "Xóa các mục đã chọn",
     "previous": "Trước",
     "next": "Tiếp"
+  },
+  "UserPage": {
+    "title": "Quản lý người dùng",
+    "description": "Quản lý người dùng",
+    "home": "Trang chủ",
+    "users": "Người dùng",
+    "createUser": {
+      "title": "Tạo người dùng",
+      "description": "Tạo người dùng mới"
+    },
+    "editUser": {
+      "title": "Chỉnh sửa người dùng",
+      "description": "Chỉnh sửa thông tin người dùng"
+    },
+    "dataTable": {
+      "columns": {
+        "id": "ID",
+        "name": "Tên",
+        "email": "Email",
+        "role": "Vai trò",
+        "createdAt": "Ngày tạo",
+        "avatar": "Ảnh đại diện",
+        "phone": "Số điện thoại",
+        "provider": "Nhà cung cấp",
+        "gender": "Giới tính",
+        "address": "Địa chỉ",
+        "actions": {
+          "title": "Thao tác"
+        }
+      }
+    },
+    "gender": {
+      "male": "Nam",
+      "female": "Nữ",
+      "unknown": "Không xác định"
+    },
+    "resetPasswordSuccess": "Tạo link reset mật khẩu thành công",
+    "resetPasswordFailed": "Tạo link reset mật khẩu thất bại",
+    "resetPasswordModal": {
+      "title": "Link Reset Mật Khẩu",
+      "description": "Sao chép link bên dưới và chia sẻ với người dùng để họ có thể reset mật khẩu:",
+      "close": "Đóng"
+    },
+    "actions": {
+      "resetPassword": "Đặt lại mật khẩu",
+      "revokeAccess": "Thu hồi quyền truy cập",
+      "deleteUser": "Xóa người dùng"
+    },
+    "confirmRevokeAccess": "Bạn có chắc chắn muốn thu hồi quyền truy cập của người dùng này không?",
+    "confirmDeleteUser": "Bạn có chắc chắn muốn xóa người dùng này không?",
+    "confirmBulkDeleteUser": "Bạn có chắc chắn muốn xóa {count} người dùng đã chọn không?",
+    "revokeAccessSuccess": "Thu hồi quyền truy cập thành công",
+    "revokeAccessFailed": "Thu hồi quyền truy cập thất bại",
+    "deleteUserSuccess": "Đã xóa {count} người dùng thành công",
+    "deleteUserFailed": "Xóa người dùng thất bại",
+    "createUserSuccess": "Tạo người dùng thành công",
+    "createUserFailed": "Tạo người dùng thất bại",
+    "form": {
+      "name": "Họ tên",
+      "namePlaceholder": "Nhập họ tên",
+      "email": "Email",
+      "emailPlaceholder": "Nhập email",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
+      "address": "Địa chỉ",
+      "addressPlaceholder": "Nhập địa chỉ",
+      "dateOfBirth": "Ngày sinh",
+      "gender": "Giới tính",
+      "genderPlaceholder": "Chọn giới tính",
+      "createUser": "Tạo người dùng",
+      "saveChanges": "Lưu thay đổi",
+      "validation": {
+        "nameRequired": "Họ tên là bắt buộc",
+        "emailRequired": "Email là bắt buộc",
+        "emailInvalid": "Vui lòng nhập email hợp lệ"
+      }
+    }
+  },
+  "ProfilePage": {
+    "title": "Trang cá nhân",
+    "description": "Quản lý trang cá nhân",
+    "home": "Trang chủ",
+    "profile": "Trang cá nhân",
+    "saveProfile": "Lưu thay đổi",
+    "updateSuccess": "Cập nhật profile thành công",
+    "updateFailed": "Cập nhật profile thất bại",
+    "form": {
+      "name": "Họ tên",
+      "namePlaceholder": "Nhập họ tên",
+      "email": "Email",
+      "emailPlaceholder": "Nhập email",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
+      "address": "Địa chỉ",
+      "addressPlaceholder": "Nhập địa chỉ",
+      "dateOfBirth": "Ngày sinh",
+      "gender": "Giới tính",
+      "genderPlaceholder": "Chọn giới tính",
+      "male": "Nam",
+      "female": "Nữ",
+      "saveChanges": "Lưu thay đổi",
+      "changePassword": "Đổi mật khẩu",
+      "uploadSuccess": "Tải ảnh lên thành công",
+      "uploadFailed": "Tải ảnh lên thất bại",
+      "uploading": "Đang tải ảnh lên...",
+      "compressing": "Đang nén ảnh...",
+      "compressionFailed": "Nén ảnh thất bại. Sử dụng file gốc.",
+      "selectImage": "Chọn ảnh",
+      "uploadInfo": {
+        "title": "Yêu cầu upload ảnh",
+        "maxSize": "Kích thước tối đa: 10MB",
+        "supportedFormats": "Định dạng hỗ trợ: JPG, PNG, GIF, WebP",
+        "note": "Ảnh sẽ được tự động nén xuống tối đa 1MB trước khi upload"
+      },
+      "updateImage": "Cập nhật ảnh",
+      "removeImage": "Xóa ảnh",
+      "imageSelected": "Ảnh đã được chọn",
+      "fileTooLarge": "Kích thước file quá lớn (tối đa 5MB)",
+      "invalidFileType": "File không hợp lệ. Vui lòng chọn file ảnh",
+      "validation": {
+        "nameRequired": "Họ tên là bắt buộc",
+        "emailRequired": "Email là bắt buộc",
+        "emailInvalid": "Vui lòng nhập email hợp lệ"
+      }
+    }
+  },
+  "ChangePasswordPage": {
+    "title": "Đổi mật khẩu",
+    "description": "Thay đổi mật khẩu tài khoản của bạn",
+    "home": "Trang chủ",
+    "profile": "Trang cá nhân",
+    "changePassword": "Đổi mật khẩu",
+    "changePasswordSuccess": "Đổi mật khẩu thành công",
+    "changePasswordFailed": "Đổi mật khẩu thất bại",
+    "form": {
+      "currentPassword": "Mật khẩu hiện tại",
+      "currentPasswordPlaceholder": "Nhập mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "newPasswordPlaceholder": "Nhập mật khẩu mới",
+      "confirmPassword": "Nhập lại mật khẩu mới",
+      "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+      "saveChanges": "Lưu thay đổi",
+      "validation": {
+        "currentPasswordRequired": "Mật khẩu hiện tại là bắt buộc",
+        "newPasswordRequired": "Mật khẩu mới là bắt buộc",
+        "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự",
+        "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+        "passwordMismatch": "Mật khẩu không khớp",
+        "samePassword": "Mật khẩu mới phải khác với mật khẩu hiện tại"
+      }
+    }
   }
 }

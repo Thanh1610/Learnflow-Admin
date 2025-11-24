@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
   User,
 } from '@heroui/react';
-import { LogOut, SettingsIcon, User as UserIcon } from 'lucide-react';
+import { LogOut, User as UserIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -28,10 +28,7 @@ export const UserCard = ({ user }: { user: AuthUser | null }) => {
   const handleAction = (key: React.Key) => {
     switch (key) {
       case 'profile':
-        // TODO: Navigate to profile page
-        break;
-      case 'settings':
-        // TODO: Navigate to settings page
+        router.push(PAGE_ROUTES.PROFILE_PAGE);
         break;
       case 'logout':
         handleLogout();
@@ -84,13 +81,6 @@ export const UserCard = ({ user }: { user: AuthUser | null }) => {
             startContent={<UserIcon className="h-4 w-4" />}
           >
             {t('profile')}
-          </ListboxItem>
-          <ListboxItem
-            key="settings"
-            className="text-lg"
-            startContent={<SettingsIcon className="h-4 w-4" />}
-          >
-            {t('settings')}
           </ListboxItem>
         </Listbox>
       </CardBody>
