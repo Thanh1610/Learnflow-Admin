@@ -19,6 +19,10 @@ interface CustomSelectProps {
   selectionMode: 'single' | 'multiple';
   onSelectionChange?: (keys: Selection) => void;
   className?: string;
+  classNames?: {
+    trigger?: string;
+    [key: string]: string | undefined;
+  };
 }
 
 export default function CustomSelect({
@@ -38,7 +42,7 @@ export default function CustomSelect({
 
   return (
     <Select
-      className={cn('max-w-xs', className)}
+      className={cn(!className && 'max-w-xs', className)}
       label={label}
       placeholder={placeholder}
       endContent={endContent}

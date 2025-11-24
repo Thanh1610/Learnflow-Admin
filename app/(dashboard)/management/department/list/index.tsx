@@ -32,8 +32,6 @@ export default function DepartmentTableWrapper({
     isBulkDeleting,
   } = useCreateDepartment();
 
-  console.log('data', data);
-
   const columns = [
     { name: tDataTable('columns.id'), uid: 'id', sortable: true },
     {

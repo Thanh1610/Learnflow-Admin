@@ -1,5 +1,6 @@
 import { LanguageToggle } from '@/app/components/atoms/Language';
 import ThemeSwitcher from '@/app/components/ThemeSwitcher';
+import { USER_ROLES } from '@/config/constants';
 import { PAGE_ROUTES } from '@/config/pageRoutes';
 import {
   BarChart,
@@ -21,49 +22,61 @@ export interface MenuItem {
   labelFirst?: boolean;
 }
 
-export async function getMenuItems(initialLocale: string): Promise<MenuItem[]> {
+export async function getMenuItems(
+  initialLocale: string,
+  userRole?: string | null
+): Promise<MenuItem[]> {
   const t = await getTranslations('sidebar');
+
+  const managementItems: MenuItem[] = [];
+
+  // Chỉ SYSTEM_ADMIN mới thấy menu Users
+  if (userRole === USER_ROLES.SYSTEM_ADMIN) {
+    managementItems.push({
+      href: PAGE_ROUTES.USERS_LIST,
+      icon: <Users className="h-5 w-5" />,
+      label: t('management.users'),
+    });
+  }
+
+  managementItems.push(
+    {
+      href: '/management/questions',
+      icon: <HelpCircle className="h-5 w-5" />,
+      label: t('management.questions'),
+    },
+    {
+      href: PAGE_ROUTES.DEPARTMENT_LIST,
+      icon: <Building className="h-5 w-5" />,
+      label: t('management.department'),
+    }
+  );
+
   return [
     {
       href: '/',
-      icon: <Home className="w-5 h-5" />,
+      icon: <Home className="h-5 w-5" />,
       label: t('home'),
     },
     {
       href: '/courses',
-      icon: <FileText className="w-5 h-5" />,
+      icon: <FileText className="h-5 w-5" />,
       label: t('courses'),
     },
     {
       href: '/management',
-      icon: <Monitor className="w-5 h-5" />,
+      icon: <Monitor className="h-5 w-5" />,
       label: t('management.heading'),
-      items: [
-        {
-          href: '/management/users',
-          icon: <Users className="w-5 h-5" />,
-          label: t('management.users'),
-        },
-        {
-          href: '/management/questions',
-          icon: <HelpCircle className="w-5 h-5" />,
-          label: t('management.questions'),
-        },
-        {
-          href: PAGE_ROUTES.DEPARTMENT_LIST,
-          icon: <Building className="w-5 h-5" />,
-          label: t('management.department'),
-        },
-      ],
+      items: managementItems,
     },
     {
       href: '/analytics',
-      icon: <BarChart className="w-5 h-5" />,
+      icon: <BarChart className="h-5 w-5" />,
       label: t('analytics'),
     },
     {
       href: '/settings',
-      icon: <Settings className="w-5 h-5" />,
+      icon: <Settings className="h-5 w-5" />,
       label: t('settings.heading'),
       items: [
         {

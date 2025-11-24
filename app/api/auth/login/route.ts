@@ -32,6 +32,7 @@ export async function POST(req: Request) {
           name
           role
           password
+          avatar
         }
       }
     `;
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
         name: string | null;
         role: string;
         password: string | null;
+        avatar: string | null;
       }>;
     }>(findUserQuery);
     console.log('Step 1 result:', {
@@ -129,10 +131,11 @@ export async function POST(req: Request) {
 
     // Exclude sensitive fields from user object
     const publicUser = {
-      id: user.id,
+      id: String(user.id),
       email: user.email,
       name: user.name,
       role: user.role,
+      avatar: user.avatar,
     };
 
     const response = NextResponse.json(

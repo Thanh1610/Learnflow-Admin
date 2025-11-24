@@ -56,7 +56,7 @@ export default function DepartmentForm({
   const isPublic = statusOverride ?? data?.isPublic ?? true;
 
   // Fetch users not in this department (only when editing)
-  const { users: usersNotInDepartment } = useUsersNotInDepartment(
+  const { users: _usersNotInDepartment } = useUsersNotInDepartment(
     type === 'edit' && data?.id ? data.id : null
   );
   //form schema
@@ -189,24 +189,6 @@ export default function DepartmentForm({
           />
 
           <Spacer y={6} />
-
-          {type === 'edit' && data?.isPublic === false && (
-            <>
-              <CustomSelect
-                options={usersNotInDepartment.map(user => ({
-                  key: user.id,
-                  label: user.name || user.email,
-                }))}
-                label={tStatus('usersNotInDepartment')}
-                placeholder={tStatus('usersNotInDepartmentPlaceholder')}
-                selectionMode="multiple"
-                onSelectionChange={keys => {
-                  console.log('Selected users:', Array.from(keys));
-                }}
-              />
-              <Spacer y={6} />
-            </>
-          )}
 
           <Divider />
           <div className="flex w-full items-center justify-center px-4 pt-4">

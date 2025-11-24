@@ -1,3 +1,4 @@
+import { useSidebar } from '@/app/components/organisms/Sidebar/SidebarContext';
 import { useAuthStore, type AuthUser } from '@/app/stores/useAuthStore';
 import { PAGE_ROUTES } from '@/config/pageRoutes';
 import { Listbox, ListboxItem } from '@heroui/listbox';
@@ -14,12 +15,12 @@ import {
   PopoverTrigger,
   User,
 } from '@heroui/react';
-import { LogOut, SettingsIcon, User as UserIcon } from 'lucide-react';
+import { LogOut, User as UserIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-export const UserCard = ({ user }: { user: AuthUser }) => {
+export const UserCard = ({ user }: { user: AuthUser | null }) => {
   const defaultAvatar = '/image/default_avatar.jpg';
   const clear = useAuthStore(state => state.clear);
   const router = useRouter();
@@ -27,10 +28,7 @@ export const UserCard = ({ user }: { user: AuthUser }) => {
   const handleAction = (key: React.Key) => {
     switch (key) {
       case 'profile':
-        // TODO: Navigate to profile page
-        break;
-      case 'settings':
-        // TODO: Navigate to settings page
+        router.push(PAGE_ROUTES.PROFILE_PAGE);
         break;
       case 'logout':
         handleLogout();
@@ -53,23 +51,24 @@ export const UserCard = ({ user }: { user: AuthUser }) => {
     }
   };
 
+  const displayName = user?.name || 'User';
+  const displayEmail = user?.email || '';
+  const displayAvatar = user?.avatar || defaultAvatar;
+
   return (
     <Card className="max-w-[300px] border-none bg-transparent" shadow="none">
       <CardHeader className="justify-between">
         <div className="flex gap-3">
-          <Avatar
-            src={user.avatar ?? defaultAvatar}
-            isBordered
-            radius="full"
-            size="md"
-          />
+          <Avatar src={displayAvatar} isBordered radius="full" size="md" />
           <div className="flex flex-col items-start justify-center">
-            <h4 className="text-small font-semibold leading-none text-default-600">
-              {user.name}
+            <h4 className="text-small text-default-600 leading-none font-semibold">
+              {displayName}
             </h4>
-            <h5 className="text-small tracking-tight text-default-500">
-              {user.email}
-            </h5>
+            {displayEmail && (
+              <h5 className="text-small text-default-500 tracking-tight">
+                {displayEmail}
+              </h5>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -79,16 +78,9 @@ export const UserCard = ({ user }: { user: AuthUser }) => {
           <ListboxItem
             key="profile"
             className="text-lg"
-            startContent={<UserIcon className="w-4 h-4" />}
+            startContent={<UserIcon className="h-4 w-4" />}
           >
             {t('profile')}
-          </ListboxItem>
-          <ListboxItem
-            key="settings"
-            className="text-lg"
-            startContent={<SettingsIcon className="w-4 h-4" />}
-          >
-            {t('settings')}
           </ListboxItem>
         </Listbox>
       </CardBody>
@@ -100,7 +92,7 @@ export const UserCard = ({ user }: { user: AuthUser }) => {
           size="sm"
           variant="light"
           onPress={handleLogout}
-          startContent={<LogOut className="w-4 h-4" />}
+          startContent={<LogOut className="h-4 w-4" />}
         >
           {t('logout')}
         </Button>
@@ -111,22 +103,37 @@ export const UserCard = ({ user }: { user: AuthUser }) => {
 
 export default function AvatarPopover() {
   const user = useAuthStore(state => state.user);
-  if (!user) {
-    return null;
-  }
+  const { isOpen, isMobile } = useSidebar();
+  const isCollapsed = !isOpen && !isMobile;
+  const defaultAvatar = '/image/default_avatar.jpg';
+
+  const displayName = user?.name || 'User';
+  const displayEmail = user?.email || '';
+  const displayAvatar = user?.avatar || defaultAvatar;
 
   return (
     <Popover placement="right">
       <PopoverTrigger>
-        <User
-          as="button"
-          className="transition-transform"
-          description={user.email}
-          name={user.name}
-          avatarProps={{
-            src: user.avatar || '/image/default_avatar.jpg',
-          }}
-        />
+        {isCollapsed ? (
+          <Avatar
+            src={displayAvatar}
+            isBordered
+            radius="lg"
+            size="sm"
+            as="button"
+            className="transition-transform"
+          />
+        ) : (
+          <User
+            as="button"
+            className="transition-transform"
+            description={displayEmail || undefined}
+            name={displayName}
+            avatarProps={{
+              src: displayAvatar,
+            }}
+          />
+        )}
       </PopoverTrigger>
       <PopoverContent className="p-1">
         <UserCard user={user} />

@@ -1,5 +1,5 @@
-import type { User as UserType } from '@/app/hooks/useUsersInDepartment';
 import { getAvatarProps } from '@/lib/avatar';
+import type { User as UserType } from '@/types/user.type';
 import { Button, cn, User } from '@heroui/react';
 import { Trash } from 'lucide-react';
 
