@@ -172,6 +172,18 @@
     "next": "Next"
   },
   "UserPage": {
+    "title": "Users Management",
+    "description": "Manage users",
+    "home": "Home",
+    "users": "Users",
+    "createUser": {
+      "title": "Create User",
+      "description": "Create a new user"
+    },
+    "editUser": {
+      "title": "Edit User",
+      "description": "Edit user information"
+    },
     "dataTable": {
       "columns": {
         "id": "ID",
@@ -183,13 +195,57 @@
         "phone": "Phone",
         "provider": "Provider",
         "gender": "Gender",
-        "address": "Address"
+        "address": "Address",
+        "actions": {
+          "title": "Actions"
+        }
       }
     },
     "gender": {
       "male": "Male",
       "female": "Female",
       "unknown": "Unknown"
+    },
+    "resetPasswordSuccess": "Reset password link generated successfully",
+    "resetPasswordFailed": "Failed to generate reset password link",
+    "resetPasswordModal": {
+      "title": "Reset Password Link",
+      "description": "Copy the link below and share it with the user to reset their password:",
+      "close": "Close"
+    },
+    "actions": {
+      "resetPassword": "Reset Password",
+      "revokeAccess": "Revoke Access",
+      "deleteUser": "Delete User"
+    },
+    "confirmRevokeAccess": "Are you sure you want to revoke access for this user?",
+    "confirmDeleteUser": "Are you sure you want to delete this user?",
+    "confirmBulkDeleteUser": "Are you sure you want to delete {count} selected user(s)?",
+    "revokeAccessSuccess": "Access revoked successfully",
+    "revokeAccessFailed": "Failed to revoke access",
+    "deleteUserSuccess": "Successfully deleted {count} user(s)",
+    "deleteUserFailed": "Failed to delete user",
+    "createUserSuccess": "User created successfully",
+    "createUserFailed": "Failed to create user",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Enter name",
+      "email": "Email",
+      "emailPlaceholder": "Enter email",
+      "phone": "Phone",
+      "phonePlaceholder": "Enter phone number",
+      "address": "Address",
+      "addressPlaceholder": "Enter address",
+      "dateOfBirth": "Date of Birth",
+      "gender": "Gender",
+      "genderPlaceholder": "Select gender",
+      "createUser": "Create User",
+      "saveChanges": "Save Changes",
+      "validation": {
+        "nameRequired": "Name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address"
+      }
     }
   },
   "ProfilePage": {

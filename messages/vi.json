@@ -172,6 +172,18 @@
     "next": "Tiếp"
   },
   "UserPage": {
+    "title": "Quản lý người dùng",
+    "description": "Quản lý người dùng",
+    "home": "Trang chủ",
+    "users": "Người dùng",
+    "createUser": {
+      "title": "Tạo người dùng",
+      "description": "Tạo người dùng mới"
+    },
+    "editUser": {
+      "title": "Chỉnh sửa người dùng",
+      "description": "Chỉnh sửa thông tin người dùng"
+    },
     "dataTable": {
       "columns": {
         "id": "ID",
@@ -183,13 +195,57 @@
         "phone": "Số điện thoại",
         "provider": "Nhà cung cấp",
         "gender": "Giới tính",
-        "address": "Địa chỉ"
+        "address": "Địa chỉ",
+        "actions": {
+          "title": "Thao tác"
+        }
       }
     },
     "gender": {
       "male": "Nam",
       "female": "Nữ",
       "unknown": "Không xác định"
+    },
+    "resetPasswordSuccess": "Tạo link reset mật khẩu thành công",
+    "resetPasswordFailed": "Tạo link reset mật khẩu thất bại",
+    "resetPasswordModal": {
+      "title": "Link Reset Mật Khẩu",
+      "description": "Sao chép link bên dưới và chia sẻ với người dùng để họ có thể reset mật khẩu:",
+      "close": "Đóng"
+    },
+    "actions": {
+      "resetPassword": "Đặt lại mật khẩu",
+      "revokeAccess": "Thu hồi quyền truy cập",
+      "deleteUser": "Xóa người dùng"
+    },
+    "confirmRevokeAccess": "Bạn có chắc chắn muốn thu hồi quyền truy cập của người dùng này không?",
+    "confirmDeleteUser": "Bạn có chắc chắn muốn xóa người dùng này không?",
+    "confirmBulkDeleteUser": "Bạn có chắc chắn muốn xóa {count} người dùng đã chọn không?",
+    "revokeAccessSuccess": "Thu hồi quyền truy cập thành công",
+    "revokeAccessFailed": "Thu hồi quyền truy cập thất bại",
+    "deleteUserSuccess": "Đã xóa {count} người dùng thành công",
+    "deleteUserFailed": "Xóa người dùng thất bại",
+    "createUserSuccess": "Tạo người dùng thành công",
+    "createUserFailed": "Tạo người dùng thất bại",
+    "form": {
+      "name": "Họ tên",
+      "namePlaceholder": "Nhập họ tên",
+      "email": "Email",
+      "emailPlaceholder": "Nhập email",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
+      "address": "Địa chỉ",
+      "addressPlaceholder": "Nhập địa chỉ",
+      "dateOfBirth": "Ngày sinh",
+      "gender": "Giới tính",
+      "genderPlaceholder": "Chọn giới tính",
+      "createUser": "Tạo người dùng",
+      "saveChanges": "Lưu thay đổi",
+      "validation": {
+        "nameRequired": "Họ tên là bắt buộc",
+        "emailRequired": "Email là bắt buộc",
+        "emailInvalid": "Vui lòng nhập email hợp lệ"
+      }
     }
   },
   "ProfilePage": {
