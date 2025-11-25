@@ -4,10 +4,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   const users = await hasura<{
-    user: Array<User>;
+    User: Array<User>;
   }>(`
       query GetAllUser {
-      user(where: {deletedAt: {_is_null: true}}) {
+      User(where: {deletedAt: {_is_null: true}}) {
         id
         name
         phone
@@ -23,7 +23,7 @@ export async function GET() {
   `);
   return NextResponse.json({
     success: true,
-    data: users.user ?? [],
+    data: users.User ?? [],
     message: 'Get all users successfully',
   });
 }

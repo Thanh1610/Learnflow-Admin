@@ -4,10 +4,10 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   try {
     const departments = await hasura<{
-      department: Array<Department>;
+      Department: Array<Department>;
     }>(`
       query GetAllDepartments {
-        department(where: { deletedAt: { _is_null: true } }) {
+        Department(where: { deletedAt: { _is_null: true } }) {
           id
           name
           description
@@ -19,7 +19,7 @@ export async function GET() {
     `);
     return NextResponse.json({
       success: true,
-      data: departments.department ?? [],
+      data: departments.Department ?? [],
     });
   } catch (error) {
     console.error({

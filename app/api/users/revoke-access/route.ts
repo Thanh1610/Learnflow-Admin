@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     // Tìm user theo ID (chỉ user chưa bị xóa)
     const findUserQuery = `
       query FindUserById {
-        user(where: { _and: [{ id: { _eq: ${userIdNumber} } }, { deletedAt: { _is_null: true } }] }) {
+        User(where: { _and: [{ id: { _eq: ${userIdNumber} } }, { deletedAt: { _is_null: true } }] }) {
           id
           email
         }
@@ -38,13 +38,13 @@ export async function POST(req: NextRequest) {
     `;
 
     const userResult = await hasura<{
-      user: Array<{
+      User: Array<{
         id: number;
         email: string;
       }>;
     }>(findUserQuery);
 
-    if (!userResult.user || userResult.user.length === 0) {
+    if (!userResult.User || userResult.User.length === 0) {
       return NextResponse.json(
         { success: false, error: 'User not found' },
         { status: 404 }
@@ -53,23 +53,18 @@ export async function POST(req: NextRequest) {
 
     // Set clientRefreshToken và clientRefreshTokenExpiresAt về null
     const updateUserMutation = `
-      mutation RevokeUserAccess {
-        updateUserById(
-          keyId: ${userIdNumber}
-          updateColumns: {
-            clientRefreshToken: { set: null }
-            clientRefreshTokenExpiresAt: { set: null }
-          }
+      mutation RevokeUserAccess($id: Int!) {
+        update_User_by_pk(
+          pk_columns: { id: $id }
+          _set: { clientRefreshToken: null, clientRefreshTokenExpiresAt: null }
         ) {
-          returning {
             id
-          }
         }
       }
     `;
 
     try {
-      await hasura(updateUserMutation);
+      await hasura(updateUserMutation, { id: userIdNumber });
     } catch (updateError) {
       console.error('Failed to revoke access:', updateError);
       return NextResponse.json(

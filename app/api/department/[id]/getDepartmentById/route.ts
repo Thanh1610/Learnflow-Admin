@@ -20,8 +20,8 @@ export async function GET(
   }
 
   const query = `
-    query GetDepartmentById($id: Int32!) {
-      department(
+    query GetDepartmentById($id: Int!) {
+      Department(
         where: {
           _and: [
             { id: { _eq: $id } }
@@ -36,11 +36,11 @@ export async function GET(
     }
     }
   `;
-  const data = await hasura<{ department: Department[] }>(query, {
+  const data = await hasura<{ Department: Department[] }>(query, {
     id: numericId,
   });
   return NextResponse.json({
     success: true,
-    data: data.department?.[0] ?? null,
+    data: data.Department?.[0] ?? null,
   });
 }

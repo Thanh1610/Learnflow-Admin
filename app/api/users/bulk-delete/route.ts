@@ -35,16 +35,12 @@ export async function POST(req: NextRequest) {
     // Set deletedAt cho tất cả users (soft delete)
     const timestamp = new Date().toISOString();
     const mutation = `
-      mutation SoftDeleteUser($id: Int32!, $timestamp: Timestamp!) {
-        updateUserById(
-          keyId: $id
-          preCheck: { deletedAt: { _is_null: true } }
-          updateColumns: {
-            deletedAt: { set: $timestamp }
-            updatedAt: { set: $timestamp }
-          }
+      mutation SoftDeleteUser($id: Int!, $timestamp: timestamp!) {
+        update_User(
+          where: { _and: [{ id: { _eq: $id } }, { deletedAt: { _is_null: true } }] }
+          _set: { deletedAt: $timestamp, updatedAt: $timestamp }
         ) {
-          affectedRows
+          affected_rows
           returning {
             id
           }
@@ -56,8 +52,8 @@ export async function POST(req: NextRequest) {
       const results = await Promise.all(
         userIdNumbers.map(id =>
           hasura<{
-            updateUserById: {
-              affectedRows: number;
+            update_User: {
+              affected_rows: number;
               returning: Array<{ id: number }>;
             };
           }>(mutation, { id, timestamp })
@@ -65,11 +61,11 @@ export async function POST(req: NextRequest) {
       );
 
       const affectedRows = results.reduce(
-        (sum, res) => sum + res.updateUserById.affectedRows,
+        (sum, res) => sum + res.update_User.affected_rows,
         0
       );
       const deletedIds = results.flatMap(res =>
-        res.updateUserById.returning.map(item => item.id)
+        res.update_User.returning.map(item => item.id)
       );
 
       return NextResponse.json({

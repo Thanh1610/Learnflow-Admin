@@ -4,8 +4,8 @@ import { User } from '@/types/user.type';
 import { NextRequest, NextResponse } from 'next/server';
 
 type InsertUserDepartmentsResponse = {
-  insertUserDepartments: {
-    returning: Array<{ a: number; b: number }>;
+  insert__UserDepartments: {
+    returning: Array<{ A: number; B: number }>;
   };
 };
 
@@ -72,29 +72,29 @@ export async function POST(
 
     // Kiểm tra users đã có trong department chưa
     const checkExistingQuery = `
-      query CheckExistingUsers($departmentId: Int32!, $userIds: [Int32!]!) {
-        userDepartments(
+      query CheckExistingUsers($departmentId: Int!, $userIds: [Int!]!) {
+        _UserDepartments(
           where: {
             _and: [
-              { b: { _eq: $departmentId } },
-              { a: { _in: $userIds } }
+              { B: { _eq: $departmentId } },
+              { A: { _in: $userIds } }
             ]
           }
         ) {
-          a
+          A
         }
       }
     `;
 
     const existingResult = await hasura<{
-      userDepartments: Array<{ a: number }>;
+      _UserDepartments: Array<{ A: number }>;
     }>(checkExistingQuery, {
       departmentId,
       userIds: validUserIds,
     });
 
     const existingUserIds = new Set(
-      existingResult.userDepartments?.map(ud => ud.a) ?? []
+      existingResult._UserDepartments?.map(ud => ud.A) ?? []
     );
 
     // Lọc ra những users chưa có trong department
@@ -115,41 +115,36 @@ export async function POST(
 
     // Thêm users vào department
     const mutation = `
-      mutation AddUsersToDepartment($objects: [InsertUserDepartmentsObjectInput!]!) {
-        insertUserDepartments(objects: $objects) {
+      mutation AddUsersToDepartment($objects: [_UserDepartments_insert_input!]!) {
+        insert__UserDepartments(objects: $objects) {
           returning {
-            a
-            b
+            A
+            B
           }
         }
       }
     `;
 
     const objects = newUserIds.map((userId: number) => ({
-      a: userId,
-      b: departmentId,
+      A: userId,
+      B: departmentId,
     }));
 
     const result = await hasura<InsertUserDepartmentsResponse>(mutation, {
       objects,
     });
 
-    // Tối ưu hóa: Lấy tất cả data cần thiết trong 1 query duy nhất
-    // Query này lấy cả users trong department (với nested user) và tất cả active users
-    const finalDataQuery = `
-      query GetFinalDepartmentData($departmentId: Int32!) {
-        # Lấy thông tin chi tiết của Users còn lại trong Department (với nested user)
-        departmentUsers: userDepartments(where: { b: { _eq: $departmentId } }) {
-          user {
-            id
-            email
-            name
-            role
-          }
+    const departmentUsersQuery = `
+      query GetDepartmentUserIds($departmentId: Int!) {
+        _UserDepartments(where: { B: { _eq: $departmentId } }) {
+          A
         }
-        
-        # Lấy TẤT CẢ Users đang Active
-        allActiveUsers: user(where: { deletedAt: { _is_null: true } }) {
+      }
+    `;
+
+    const allActiveUsersQuery = `
+      query GetAllActiveUsers {
+        User(where: { deletedAt: { _is_null: true } }) {
           id
           email
           name
@@ -158,25 +153,26 @@ export async function POST(
       }
     `;
 
-    const finalDataResult = await hasura<{
-      departmentUsers: Array<{ user: User | null }>;
-      allActiveUsers: User[];
-    }>(finalDataQuery, {
-      departmentId,
-    });
+    const [departmentUsersResult, allActiveUsersResult] = await Promise.all([
+      hasura<{ _UserDepartments: Array<{ A: number }> }>(departmentUsersQuery, {
+        departmentId,
+      }),
+      hasura<{ User: User[] }>(allActiveUsersQuery),
+    ]);
 
-    // Extract users trong department từ nested structure
-    const usersInDepartment =
-      finalDataResult.departmentUsers
-        ?.map(ud => ud.user)
-        .filter((user): user is User => user !== null) ?? [];
+    const userIdsInDepartment = new Set(
+      departmentUsersResult._UserDepartments?.map(ud => ud.A) ?? []
+    );
 
-    // Lọc users không thuộc department
-    const userIdsInDepartment = new Set(usersInDepartment.map(u => u.id));
-    const usersNotInDepartment =
-      finalDataResult.allActiveUsers?.filter(
-        user => !userIdsInDepartment.has(user.id)
-      ) ?? [];
+    const allActiveUsers = allActiveUsersResult.User ?? [];
+
+    const usersInDepartment = allActiveUsers.filter(user =>
+      userIdsInDepartment.has(user.id)
+    );
+
+    const usersNotInDepartment = allActiveUsers.filter(
+      user => !userIdsInDepartment.has(user.id)
+    );
 
     // Trả về kết quả bao gồm:
     // - added: số lượng users đã thêm thành công
@@ -187,7 +183,7 @@ export async function POST(
       {
         success: true,
         data: {
-          added: result.insertUserDepartments.returning.length,
+          added: result.insert__UserDepartments.returning.length,
           skipped: existingUserIds.size,
           usersInDepartment,
           usersNotInDepartment,

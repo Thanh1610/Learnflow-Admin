@@ -24,7 +24,7 @@ export async function GET(
     // Strategy: Get all active users, then get users in department, filter in code
     const allUsersQuery = `
       query GetAllActiveUsers {
-        user(where: { deletedAt: { _is_null: true } }) {
+        User(where: { deletedAt: { _is_null: true } }) {
           id
           email
           name
@@ -34,27 +34,27 @@ export async function GET(
     `;
 
     const usersInDepartmentQuery = `
-      query GetUsersInDepartment($departmentId: Int32!) {
-        userDepartments(where: { b: { _eq: $departmentId } }) {
-          a
+      query GetUsersInDepartment($departmentId: Int!) {
+        _UserDepartments(where: { B: { _eq: $departmentId } }) {
+          A
         }
       }
     `;
 
     const [allUsersResult, usersInDeptResult] = await Promise.all([
-      hasura<{ user: User[] }>(allUsersQuery),
-      hasura<{ userDepartments: Array<{ a: number }> }>(
+      hasura<{ User: User[] }>(allUsersQuery),
+      hasura<{ _UserDepartments: Array<{ A: number }> }>(
         usersInDepartmentQuery,
         { departmentId: numericId }
       ),
     ]);
 
     const userIdsInDepartment = new Set(
-      usersInDeptResult.userDepartments?.map(ud => ud.a) ?? []
+      usersInDeptResult._UserDepartments?.map(ud => ud.A) ?? []
     );
 
     const usersNotInDepartment =
-      allUsersResult.user?.filter(user => !userIdsInDepartment.has(user.id)) ??
+      allUsersResult.User?.filter(user => !userIdsInDepartment.has(user.id)) ??
       [];
 
     return NextResponse.json({

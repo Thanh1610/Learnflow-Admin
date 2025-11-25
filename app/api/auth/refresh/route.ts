@@ -26,7 +26,7 @@ export async function POST() {
 
     const findUserQuery = `
       query FindUserByRefreshToken {
-        user(
+        User(
           where: {
             _and: [
               { refreshToken: { _eq: ${escapedRefreshToken} } }
@@ -44,7 +44,7 @@ export async function POST() {
     `;
 
     const userResult = await hasura<{
-      user: Array<{
+      User: Array<{
         id: number;
         email: string;
         name: string | null;
@@ -52,14 +52,14 @@ export async function POST() {
       }>;
     }>(findUserQuery);
 
-    if (!userResult.user || userResult.user.length === 0) {
+    if (!userResult.User || userResult.User.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Invalid or expired refresh token' },
         { status: 401 }
       );
     }
 
-    const user = userResult.user[0];
+    const user = userResult.User[0];
 
     // Tạo access token mới
     const newAccessToken = signToken(
@@ -78,26 +78,30 @@ export async function POST() {
     ).toISOString();
 
     // Cập nhật refresh token mới vào database
-    const escapedNewRefreshToken = JSON.stringify(newRefreshToken);
-    const escapedNewExpiresAt = JSON.stringify(newRefreshTokenExpiresAt);
     const updateUserMutation = `
-      mutation UpdateUserRefreshToken {
-        updateUserById(
-          keyId: ${user.id}
-          updateColumns: {
-            refreshToken: { set: ${escapedNewRefreshToken} }
-            refreshTokenExpiresAt: { set: ${escapedNewExpiresAt} }
+      mutation UpdateUserRefreshToken(
+        $id: Int!
+        $refreshToken: String!
+        $expiresAt: timestamp!
+      ) {
+        update_User_by_pk(
+          pk_columns: { id: $id }
+          _set: {
+            refreshToken: $refreshToken
+            refreshTokenExpiresAt: $expiresAt
           }
         ) {
-          returning {
             id
-          }
         }
       }
     `;
 
     try {
-      await hasura(updateUserMutation);
+      await hasura(updateUserMutation, {
+        id: user.id,
+        refreshToken: newRefreshToken,
+        expiresAt: newRefreshTokenExpiresAt,
+      });
     } catch (updateError) {
       console.error('Failed to update refresh token:', updateError);
       // Continue even if update fails - new tokens are still generated

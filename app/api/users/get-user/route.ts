@@ -22,11 +22,11 @@ export async function GET(req: Request) {
   }
 
   const userResult = await hasura<{
-    user: Array<Omit<User, 'dateOfBirth'> & { dateofbirth: string | null }>;
+    User: Array<Omit<User, 'dateOfBirth'> & { dateofbirth: string | null }>;
   }>(
     `
-    query GetUser($id: Int32!) {
-      user(where: { id: { _eq: $id } }) {
+    query GetUser($id: Int!) {
+      User(where: { id: { _eq: $id } }) {
         id
         name
         email
@@ -49,7 +49,7 @@ export async function GET(req: Request) {
   );
 
   // Map dateofbirth from GraphQL to dateOfBirth for TypeScript type
-  const user = userResult.user?.[0];
+  const user = userResult.User?.[0];
   const mappedUser: User | null = user
     ? {
         ...user,
