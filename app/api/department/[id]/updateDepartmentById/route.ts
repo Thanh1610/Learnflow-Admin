@@ -3,8 +3,8 @@ import { hasura } from '@/lib/hasura';
 import { NextRequest, NextResponse } from 'next/server';
 
 type UpdateDepartmentResponse = {
-  updateDepartmentById: {
-    affectedRows: number;
+  update_Department: {
+    affected_rows: number;
     returning: Array<{
       id: number;
       name: string;
@@ -64,21 +64,18 @@ export async function PUT(
 
     const mutation = `
       mutation UpdateDepartmentById(
-        $id: Int32!
-        $name: String1!
-        $description: String1
-        $isPublic: Boolean1!
+        $id: Int!
+        $name: String!
+        $description: String!
+        $isPublic: Boolean!
       ) {
-        updateDepartmentById(
-          keyId: $id
-          preCheck: { deletedAt: { _is_null: true } }
-          updateColumns: {
-            name: { set: $name }
-            description: { set: $description }
-            isPublic: { set: $isPublic }
+        update_Department(
+          where: {
+            _and: [{ id: { _eq: $id } }, { deletedAt: { _is_null: true } }]
           }
+          _set: { name: $name, description: $description, isPublic: $isPublic }
         ) {
-          affectedRows
+          affected_rows
           returning {
             id
             name
@@ -96,7 +93,14 @@ export async function PUT(
       isPublic,
     });
 
-    const updatedDepartment = result.updateDepartmentById.returning[0];
+    if (result.update_Department.affected_rows === 0) {
+      return NextResponse.json(
+        { success: false, error: 'Department not found' },
+        { status: 404 }
+      );
+    }
+
+    const updatedDepartment = result.update_Department.returning[0];
 
     if (!updatedDepartment) {
       return NextResponse.json(

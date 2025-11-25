@@ -7,8 +7,8 @@ type BulkDeleteRequest = {
 };
 
 type SoftDeleteDepartmentResponse = {
-  updateDepartmentById: {
-    affectedRows: number;
+  update_Department: {
+    affected_rows: number;
     returning: Array<{ id: number }>;
   };
 };
@@ -50,16 +50,12 @@ export async function POST(request: NextRequest) {
 
     const timestamp = new Date().toISOString();
     const mutation = `
-      mutation SoftDeleteDepartment($id: Int32!, $timestamp: Timestamp!) {
-        updateDepartmentById(
-          keyId: $id
-          preCheck: { deletedAt: { _is_null: true } }
-          updateColumns: {
-            deletedAt: { set: $timestamp }
-            updatedAt: { set: $timestamp }
-          }
+      mutation SoftDeleteDepartment($id: Int!, $timestamp: timestamp!) {
+        update_Department(
+          where: { _and: [{ id: { _eq: $id } }, { deletedAt: { _is_null: true } }] }
+          _set: { deletedAt: $timestamp, updatedAt: $timestamp }
         ) {
-          affectedRows
+          affected_rows
           returning {
             id
           }
@@ -74,11 +70,11 @@ export async function POST(request: NextRequest) {
     );
 
     const affectedRows = results.reduce(
-      (sum, res) => sum + res.updateDepartmentById.affectedRows,
+      (sum, res) => sum + res.update_Department.affected_rows,
       0
     );
     const deletedIds = results.flatMap(res =>
-      res.updateDepartmentById.returning.map(item => item.id)
+      res.update_Department.returning.map(item => item.id)
     );
 
     return NextResponse.json({

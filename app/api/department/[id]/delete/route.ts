@@ -3,8 +3,8 @@ import { hasura } from '@/lib/hasura';
 import { NextRequest, NextResponse } from 'next/server';
 
 type SoftDeleteDepartmentResponse = {
-  updateDepartmentById: {
-    affectedRows: number;
+  update_Department: {
+    affected_rows: number;
     returning: Array<{ id: number }>;
   };
 };
@@ -35,16 +35,12 @@ export async function DELETE(
 
     const timestamp = new Date().toISOString();
     const mutation = `
-      mutation SoftDeleteDepartment($id: Int32!, $timestamp: Timestamp!) {
-        updateDepartmentById(
-          keyId: $id
-          preCheck: { deletedAt: { _is_null: true } }
-          updateColumns: {
-            deletedAt: { set: $timestamp }
-            updatedAt: { set: $timestamp }
-          }
+      mutation SoftDeleteDepartment($id: Int!, $timestamp: timestamp!) {
+        update_Department(
+          where: { _and: [{ id: { _eq: $id } }, { deletedAt: { _is_null: true } }] }
+          _set: { deletedAt: $timestamp, updatedAt: $timestamp }
         ) {
-          affectedRows
+          affected_rows
           returning {
             id
           }
@@ -57,7 +53,7 @@ export async function DELETE(
       timestamp,
     });
 
-    if (result.updateDepartmentById.affectedRows === 0) {
+    if (result.update_Department.affected_rows === 0) {
       return NextResponse.json(
         {
           success: false,
@@ -70,7 +66,7 @@ export async function DELETE(
     return NextResponse.json({
       success: true,
       data: {
-        id: result.updateDepartmentById.returning[0]?.id ?? numericId,
+        id: result.update_Department.returning[0]?.id ?? numericId,
       },
     });
   } catch (error) {

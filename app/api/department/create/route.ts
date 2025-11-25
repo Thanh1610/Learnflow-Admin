@@ -4,7 +4,7 @@ import { Department } from '@/types/department.type';
 import { NextRequest, NextResponse } from 'next/server';
 
 type InsertDepartmentResponse = {
-  insertDepartment: {
+  insert_Department: {
     returning: Array<
       Pick<Department, 'id' | 'name' | 'description' | 'isPublic'>
     >;
@@ -37,8 +37,8 @@ export async function POST(req: NextRequest) {
 
     const now = new Date().toISOString();
     const mutation = `
-      mutation CreateDepartment($objects: [InsertDepartmentObjectInput!]!) {
-        insertDepartment(objects: $objects) {
+      mutation CreateDepartment($objects: [Department_insert_input!]!) {
+        insert_Department(objects: $objects) {
           returning {
             id
             name
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const createdDepartment = result.insertDepartment.returning[0];
+    const createdDepartment = result.insert_Department.returning[0];
 
     if (!createdDepartment) {
       throw new Error('Department was not created');

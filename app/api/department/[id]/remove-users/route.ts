@@ -66,9 +66,11 @@ export async function POST(
     // Tối ưu hóa: Sử dụng deleteUserDepartmentsByAAndB để xóa từng record
     // Gọi song song tất cả mutations bằng Promise.all để tối ưu performance
     const deleteMutation = `
-      mutation DeleteUserDepartment($keyA: Int32!, $keyB: Int32!) {
-        deleteUserDepartmentsByAAndB(keyA: $keyA, keyB: $keyB) {
-          affectedRows
+      mutation DeleteUserDepartment($userId: Int!, $departmentId: Int!) {
+        delete__UserDepartments(
+          where: { _and: [{ A: { _eq: $userId } }, { B: { _eq: $departmentId } }] }
+        ) {
+          affected_rows
         }
       }
     `;
@@ -78,19 +80,19 @@ export async function POST(
       const deleteResults = await Promise.all(
         validUserIds.map((userId: number) =>
           hasura<{
-            deleteUserDepartmentsByAAndB: {
-              affectedRows: number;
+            delete__UserDepartments: {
+              affected_rows: number;
             };
           }>(deleteMutation, {
-            keyA: userId,
-            keyB: departmentId,
+            userId,
+            departmentId,
           })
         )
       );
 
       totalRemoved = deleteResults.reduce(
         (sum, result) =>
-          sum + (result.deleteUserDepartmentsByAAndB?.affectedRows ?? 0),
+          sum + (result.delete__UserDepartments?.affected_rows ?? 0),
         0
       );
     } catch (deleteError) {
@@ -113,22 +115,17 @@ export async function POST(
       );
     }
 
-    // Tối ưu hóa: Lấy tất cả data cần thiết trong 1 query duy nhất
-    // Query này lấy cả users trong department (với nested user) và tất cả active users
-    const finalDataQuery = `
-      query GetFinalDepartmentData($departmentId: Int32!) {
-        # Lấy thông tin chi tiết của Users còn lại trong Department (với nested user)
-        departmentUsers: userDepartments(where: { b: { _eq: $departmentId } }) {
-          user {
-            id
-            email
-            name
-            role
-          }
+    const departmentUsersQuery = `
+      query GetDepartmentUserIds($departmentId: Int!) {
+        _UserDepartments(where: { B: { _eq: $departmentId } }) {
+          A
         }
-        
-        # Lấy TẤT CẢ Users đang Active
-        allActiveUsers: user(where: { deletedAt: { _is_null: true } }) {
+      }
+    `;
+
+    const allActiveUsersQuery = `
+      query GetAllActiveUsers {
+        User(where: { deletedAt: { _is_null: true } }) {
           id
           email
           name
@@ -137,25 +134,26 @@ export async function POST(
       }
     `;
 
-    const finalDataResult = await hasura<{
-      departmentUsers: Array<{ user: User | null }>;
-      allActiveUsers: User[];
-    }>(finalDataQuery, {
-      departmentId,
-    });
+    const [departmentUsersResult, allActiveUsersResult] = await Promise.all([
+      hasura<{ _UserDepartments: Array<{ A: number }> }>(departmentUsersQuery, {
+        departmentId,
+      }),
+      hasura<{ User: User[] }>(allActiveUsersQuery),
+    ]);
 
-    // Extract users trong department từ nested structure
-    const usersInDepartment =
-      finalDataResult.departmentUsers
-        ?.map(ud => ud.user)
-        .filter((user): user is User => user !== null) ?? [];
+    const userIdsInDepartment = new Set(
+      departmentUsersResult._UserDepartments?.map(ud => ud.A) ?? []
+    );
 
-    // Lọc users không thuộc department
-    const userIdsInDepartment = new Set(usersInDepartment.map(u => u.id));
-    const usersNotInDepartment =
-      finalDataResult.allActiveUsers?.filter(
-        user => !userIdsInDepartment.has(user.id)
-      ) ?? [];
+    const allActiveUsers = allActiveUsersResult.User ?? [];
+
+    const usersInDepartment = allActiveUsers.filter(user =>
+      userIdsInDepartment.has(user.id)
+    );
+
+    const usersNotInDepartment = allActiveUsers.filter(
+      user => !userIdsInDepartment.has(user.id)
+    );
 
     // Trả về kết quả bao gồm:
     // - removed: số lượng users đã xóa thành công

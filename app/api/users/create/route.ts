@@ -89,17 +89,17 @@ export async function POST(req: Request) {
     const escapedEmail = JSON.stringify(emailString);
     const checkEmailQuery = `
       query CheckEmail {
-        user(where: { _and: [{ email: { _eq: ${escapedEmail} } }, { deletedAt: { _is_null: true } }] }) {
+        User(where: { _and: [{ email: { _eq: ${escapedEmail} } }, { deletedAt: { _is_null: true } }] }) {
           id
         }
       }
     `;
 
     const emailCheckResult = await hasura<{
-      user: Array<{ id: number }>;
+      User: Array<{ id: number }>;
     }>(checkEmailQuery);
 
-    if (emailCheckResult.user && emailCheckResult.user.length > 0) {
+    if (emailCheckResult.User && emailCheckResult.User.length > 0) {
       return NextResponse.json(
         {
           success: false,
@@ -112,8 +112,8 @@ export async function POST(req: Request) {
     // Build mutation
     const now = new Date().toISOString();
     const mutation = `
-      mutation CreateUser($objects: [InsertUserObjectInput!]!) {
-        insertUser(objects: $objects) {
+      mutation CreateUser($objects: [User_insert_input!]!) {
+        insert_User(objects: $objects) {
           returning {
             ${USER_FIELDS}
           }
@@ -123,7 +123,7 @@ export async function POST(req: Request) {
 
     // Execute mutation
     const result = await hasura<{
-      insertUser: {
+      insert_User: {
         returning: Array<
           Omit<User, 'dateOfBirth'> & { dateofbirth: string | null }
         >;
@@ -146,7 +146,7 @@ export async function POST(req: Request) {
       ],
     });
 
-    const createdUser = result.insertUser.returning[0];
+    const createdUser = result.insert_User.returning[0];
     if (!createdUser) {
       return NextResponse.json(
         { success: false, error: 'Failed to create user' },

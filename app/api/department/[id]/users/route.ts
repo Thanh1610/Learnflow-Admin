@@ -23,21 +23,21 @@ export async function GET(
     // Query users that are IN this department
     // Strategy: Get userIds from userDepartments, then query users
     const userDepartmentsQuery = `
-      query GetUserIdsInDepartment($departmentId: Int32!) {
-        userDepartments(where: { b: { _eq: $departmentId } }) {
-          a
+      query GetUserIdsInDepartment($departmentId: Int!) {
+        _UserDepartments(where: { B: { _eq: $departmentId } }) {
+          A
         }
       }
     `;
 
     const userDepartmentsResult = await hasura<{
-      userDepartments: Array<{ a: number }>;
+      _UserDepartments: Array<{ A: number }>;
     }>(userDepartmentsQuery, {
       departmentId: numericId,
     });
 
     const userIds =
-      userDepartmentsResult.userDepartments?.map(ud => ud.a) ?? [];
+      userDepartmentsResult._UserDepartments?.map(ud => ud.A) ?? [];
 
     if (userIds.length === 0) {
       return NextResponse.json({
@@ -48,8 +48,8 @@ export async function GET(
 
     // Query users by their IDs
     const usersQuery = `
-      query GetUsersByIds($userIds: [Int32!]!) {
-        user(where: { id: { _in: $userIds }, deletedAt: { _is_null: true } }) {
+      query GetUsersByIds($userIds: [Int!]!) {
+        User(where: { id: { _in: $userIds }, deletedAt: { _is_null: true } }) {
           id
           email
           name
@@ -58,11 +58,11 @@ export async function GET(
       }
     `;
 
-    const usersResult = await hasura<{ user: User[] }>(usersQuery, {
+    const usersResult = await hasura<{ User: User[] }>(usersQuery, {
       userIds,
     });
 
-    const users = usersResult.user ?? [];
+    const users = usersResult.User ?? [];
 
     return NextResponse.json({
       success: true,
