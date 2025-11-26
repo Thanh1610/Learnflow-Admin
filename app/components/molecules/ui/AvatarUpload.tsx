@@ -12,10 +12,11 @@ interface AvatarUploadProps {
   avatar: string;
   onFileSelect?: (file: File) => void;
   isLoading?: boolean;
+  defaultImg?: string;
 }
 
 export default function AvatarUpload(props: AvatarUploadProps) {
-  const { avatar, onFileSelect, isLoading = false } = props;
+  const { avatar, onFileSelect, isLoading = false, defaultImg } = props;
   const t = useTranslations('ProfilePage');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevAvatarRef = useRef<string>(avatar);
@@ -146,7 +147,7 @@ export default function AvatarUpload(props: AvatarUploadProps) {
             removeWrapper
             alt="Avatar"
             className="h-auto w-full object-cover object-top"
-            src={preview || avatar || defaultAvatar.src}
+            src={preview || avatar || defaultImg || defaultAvatar.src}
             isLoading={isLoading}
           />
           <div

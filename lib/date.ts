@@ -19,13 +19,28 @@ export function formatDateTimeByLocale(
     return '';
   }
 
-  const locale = options?.locale ?? getLocaleFromCookie();
+  // Lấy locale từ options hoặc cookie, fallback mặc định là vi-VN (giờ VN)
+  const rawLocale = options?.locale ?? getLocaleFromCookie() ?? 'vi-VN';
+
+  // Chuẩn hoá locale để tránh các biến thể lạ (vi, vi-VN, en, en-US, ...)
+  const normalizedLocale = rawLocale.startsWith('vi')
+    ? 'vi-VN'
+    : rawLocale.startsWith('en')
+      ? 'en-US'
+      : rawLocale;
+
+  // Ưu tiên:
+  // 1. timeZone truyền vào options
+  // 2. map theo normalizedLocale
+  // 3. map theo rawLocale (phòng khi có key custom trong map)
+  // 4. Asia/Ho_Chi_Minh làm fallback an toàn (tránh lệch sang UTC trên server)
   const timeZone =
     options?.timeZone ??
-    LOCALE_TIMEZONE_MAP[locale] ??
-    Intl.DateTimeFormat().resolvedOptions().timeZone;
+    LOCALE_TIMEZONE_MAP[normalizedLocale] ??
+    LOCALE_TIMEZONE_MAP[rawLocale] ??
+    'Asia/Ho_Chi_Minh';
 
-  const formatter = new Intl.DateTimeFormat(locale, {
+  const formatter = new Intl.DateTimeFormat(normalizedLocale, {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',

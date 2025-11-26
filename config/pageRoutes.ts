@@ -11,4 +11,9 @@ export const PAGE_ROUTES = {
   EDIT_USER: '/management/users/[id]/edit',
   PROFILE_PAGE: '/profile',
   CHANGE_PASSWORD_PAGE: '/profile/change-password',
+  COURSE_IN_DEPARTMENT: '/departments',
+  DEPARTMENT_COURSE_LIST: '/departments/[id]/course/list',
+  COURSE_LIST: '/course/list',
+  COURSE_CREATE: '/course/create',
+  COURSE_EDIT: '/course/[id]/edit',
 } as const;

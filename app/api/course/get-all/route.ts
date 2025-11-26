@@ -1,6 +1,6 @@
 import { verifyAuth } from '@/lib/auth';
 import { hasura } from '@/lib/hasura';
-import { Department } from '@/types/department.type';
+import { Course } from '@/types/course.type';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -15,58 +15,57 @@ export async function GET(request: NextRequest) {
 
     const query = isDeptAdmin
       ? `
-      query GetDepartmentsForManager($userId: Int!) {
-        Department(
+      query GetCoursesForDeptAdmin($userId: Int!) {
+        course(
           where: {
             _and: [
-              { deletedAt: { _is_null: true } }
-              { _UserDepartments: { A: { _eq: $userId } } }
+              { deleted_at: { _is_null: true } }
+              { created_by: { _eq: $userId } }
             ]
           }
         ) {
           id
           name
           description
-          isPublic
-          createdAt
-          updatedAt
-          image
+          created_at
+          updated_at
         }
       }
     `
       : `
-      query GetAllDepartments {
-        Department(where: { deletedAt: { _is_null: true } }) {
+      query GetAllCourses {
+        course(where: { deleted_at: { _is_null: true } }) {
           id
           name
           description
-          isPublic
-          createdAt
-          updatedAt
-          image
+          created_at
+          updated_at
         }
       }
     `;
 
-    const departments = await hasura<{
-      Department: Array<Department>;
-    }>(query, isDeptAdmin ? { userId: payload.sub } : undefined, {
-      role: payload.role,
-    });
+    const result = await hasura<{ course: Course[] }>(
+      query,
+      isDeptAdmin ? { userId: payload.sub } : undefined,
+      {
+        role: payload.role,
+      }
+    );
+
     return NextResponse.json({
       success: true,
-      data: departments.Department ?? [],
+      data: result.course ?? [],
     });
   } catch (error) {
     console.error({
       success: false,
-      error: 'Failed to get all departments',
+      error: 'Failed to get all courses',
       details: error,
     });
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to get all departments',
+        error: 'Failed to get all courses',
         details: error,
       },
       { status: 500 }

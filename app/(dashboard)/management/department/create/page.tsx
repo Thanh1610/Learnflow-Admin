@@ -3,10 +3,18 @@ import { PAGE_ROUTES } from '@/config/pageRoutes';
 import { metaObject } from '@/config/site.config';
 import { getTranslations } from 'next-intl/server';
 import DepartmentForm from '@/app/components/organisms/Department/DepartmentForm';
+import { getServerUserRole } from '@/lib/server-auth';
+import { redirect } from 'next/navigation';
 export const metadata = {
   ...metaObject('Create Department'),
 };
 export default async function CreateDepartmentPage() {
+  const userRole = await getServerUserRole();
+
+  // Chỉ SYSTEM_ADMIN mới có thể truy cập
+  if (userRole !== 'SYSTEM_ADMIN') {
+    redirect(PAGE_ROUTES.DEPARTMENT_LIST);
+  }
   const t = await getTranslations('DepartmentPage');
   return (
     <div className="flex flex-col gap-8">

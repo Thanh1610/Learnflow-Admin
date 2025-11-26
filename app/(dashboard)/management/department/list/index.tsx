@@ -6,7 +6,7 @@ import { useCreateDepartment } from '@/app/hooks/useDepartment';
 import { PAGE_ROUTES } from '@/config/pageRoutes';
 import { formatDateTimeByLocale } from '@/lib/date';
 import { Department } from '@/types/department.type';
-import { Chip, useDisclosure } from '@heroui/react';
+import { Avatar, Chip, useDisclosure } from '@heroui/react';
 import { Check, XIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -14,10 +14,12 @@ import { ReactNode, useState } from 'react';
 import { toast } from 'react-hot-toast';
 interface DepartmentTableWrapperProps {
   data: Department[];
+  role?: string;
 }
 
 export default function DepartmentTableWrapper({
   data,
+  role,
 }: DepartmentTableWrapperProps) {
   const router = useRouter();
   const t = useTranslations('DepartmentPage');
@@ -38,15 +40,16 @@ export default function DepartmentTableWrapper({
       name: tDataTable('columns.name'),
       uid: 'name',
       sortable: true,
-      width: 240,
+      width: 160,
     },
+    { name: tDataTable('columns.image'), uid: 'image' },
     {
       name: tDataTable('columns.isPublic'),
       uid: 'isPublic',
     },
     { name: tDataTable('columns.description'), uid: 'description' },
-    { name: tDataTable('columns.createdAt'), uid: 'createdAt' },
-    { name: tDataTable('columns.updatedAt'), uid: 'updatedAt' },
+    { name: tDataTable('columns.createdAt'), uid: 'createdAt', sortable: true },
+    { name: tDataTable('columns.updatedAt'), uid: 'updatedAt', sortable: true },
     { name: tDataTable('columns.actions'), uid: 'actions' },
   ];
 
@@ -116,6 +119,9 @@ export default function DepartmentTableWrapper({
       return formatDateTimeByLocale(item[columnKey]);
     }
 
+    if (columnKey === 'image') {
+      return <Avatar src={item.image || ''} size="md" radius="md" />;
+    }
     return item[columnKey as keyof Department];
   };
 
@@ -133,15 +139,20 @@ export default function DepartmentTableWrapper({
         columns={columns}
         data={data}
         renderCell={renderCell}
-        onAddNew={() => {
-          router.push(PAGE_ROUTES.CREATE_DEPARTMENT);
-        }}
+        onAddNew={
+          role === 'SYSTEM_ADMIN'
+            ? () => {
+                router.push(PAGE_ROUTES.CREATE_DEPARTMENT);
+              }
+            : undefined
+        }
         onRowClick={item => {
           router.push(
             PAGE_ROUTES.EDIT_DEPARTMENT.replace('[id]', item.id.toString())
           );
         }}
         onBulkDelete={handleBulkDeleteRequest}
+        showSearch={role === 'SYSTEM_ADMIN'}
       />
       <CustomModal
         title={t('delete')}

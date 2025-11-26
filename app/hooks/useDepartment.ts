@@ -28,12 +28,14 @@ export type BulkDeletePayload = {
 export type CreateDepartmentPayload = {
   name: string;
   description: string;
+  image?: string;
   isPublic: boolean;
 };
 export type UpdateDepartmentPayload = {
   id: number;
   name: string;
   description: string;
+  image?: string;
   isPublic: boolean;
 };
 export const useCreateDepartment = () => {

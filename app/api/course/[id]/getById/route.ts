@@ -1,5 +1,5 @@
 import { hasura } from '@/lib/hasura';
-import { Department } from '@/types/department.type';
+import { Course } from '@/types/course.type';
 import { NextResponse } from 'next/server';
 
 export async function GET(
@@ -13,35 +13,30 @@ export async function GET(
     return NextResponse.json(
       {
         success: false,
-        error: 'Invalid department id',
+        error: 'Invalid course id',
       },
       { status: 400 }
     );
   }
 
   const query = `
-    query GetDepartmentById($id: Int!) {
-      Department(
-        where: {
-          _and: [
-            { id: { _eq: $id } }
-            { deletedAt: { _is_null: true } }
-          ]
-        }
-      ) {
-    id
-    name
-    description
-        image
-    isPublic
-    }
+    query GetCourseById($id: Int!) {
+      course(where: { id: { _eq: $id }, deleted_at: { _is_null: true } }) {
+        id
+        name
+        description
+        created_at
+        updated_at
+      }
     }
   `;
-  const data = await hasura<{ Department: Department[] }>(query, {
+
+  const data = await hasura<{ course: Course[] }>(query, {
     id: numericId,
   });
+
   return NextResponse.json({
     success: true,
-    data: data.Department?.[0] ?? null,
+    data: data.course?.[0] ?? null,
   });
 }

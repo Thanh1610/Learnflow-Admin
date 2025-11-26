@@ -12,21 +12,32 @@ export function getHasuraAdminSecret(): string {
   return secret;
 }
 
-export function getHasuraHeaders(): HeadersInit {
-  return {
+export function getHasuraHeaders(role?: string): HeadersInit {
+  const headers: HeadersInit = {
     'Content-Type': 'application/json',
     'x-hasura-admin-secret': getHasuraAdminSecret(),
   };
+
+  const resolvedRole = role ?? process.env.HASURA_DEFAULT_ROLE;
+  if (resolvedRole) {
+    headers['x-hasura-role'] = resolvedRole;
+  }
+
+  return headers;
 }
 
 export async function hasura<T = unknown>(
   query: string,
-  variables?: Record<string, unknown>
+  variables?: Record<string, unknown>,
+  options?: { role?: string; headers?: HeadersInit }
 ): Promise<T> {
   const url = getHasuraUrl();
   const response = await fetch(url, {
     method: 'POST',
-    headers: getHasuraHeaders(),
+    headers: {
+      ...getHasuraHeaders(options?.role),
+      ...(options?.headers ?? {}),
+    },
     body: JSON.stringify({ query, variables: variables || {} }),
   });
 

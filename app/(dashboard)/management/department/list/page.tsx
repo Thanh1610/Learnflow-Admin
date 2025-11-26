@@ -4,6 +4,7 @@ import { PAGE_ROUTES } from '@/config/pageRoutes';
 import { metaObject } from '@/config/site.config';
 import { getTranslations } from 'next-intl/server';
 import DepartmentTableWrapper from './index';
+import { getServerUserRole } from '@/lib/server-auth';
 
 export const metadata = {
   ...metaObject('Department List'),
@@ -11,6 +12,7 @@ export const metadata = {
 
 export default async function DepartmentPage() {
   const t = await getTranslations('DepartmentPage');
+  const userRole = await getServerUserRole();
 
   const data = await getAllDepartments();
   return (
@@ -31,7 +33,7 @@ export default async function DepartmentPage() {
         ]}
       />
       <div className="px-8">
-        <DepartmentTableWrapper data={data} />
+        <DepartmentTableWrapper data={data} role={userRole ?? undefined} />
       </div>
     </div>
   );

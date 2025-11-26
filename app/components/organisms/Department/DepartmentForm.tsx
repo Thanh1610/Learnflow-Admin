@@ -11,7 +11,7 @@ import { toast } from 'react-hot-toast';
 
 import CustomSelect from '@/app/components/atoms/CustomSelect';
 import { useCreateDepartment } from '@/app/hooks/useDepartment';
-import { useUsersNotInDepartment } from '@/app/hooks/useUsersNotInDepartment';
+import { useUploadAvatar } from '@/app/hooks/useUploadAvatar';
 import {
   Button,
   Card,
@@ -27,12 +27,17 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import AvatarUpload from '@/app/components/molecules/ui/AvatarUpload';
+import defaultDepartment from '@/public/image/default_department.png';
+import { PAGE_ROUTES } from '@/config/pageRoutes';
+import type { FetchError } from '@/lib/fetcher';
 
 type DepartmentFormData = {
   id?: number;
   name: string;
   description?: string | null;
   isPublic?: boolean;
+  image?: string | null;
 };
 
 interface DepartmentFormProps extends CardProps {
@@ -45,6 +50,7 @@ export default function DepartmentForm({
   data,
   ...props
 }: DepartmentFormProps) {
+  console.log('data', data);
   const t = useTranslations('DepartmentPage.createDepartment');
   const tEdit = useTranslations('DepartmentPage.editDepartment');
   const tStatus = useTranslations('DepartmentPage');
@@ -52,24 +58,28 @@ export default function DepartmentForm({
   const router = useRouter();
   const { createDepartment, isCreating, error, updateDepartment, isUpdating } =
     useCreateDepartment();
+  const { uploadAvatar, isLoading: isUploadingAvatar } = useUploadAvatar();
   const [statusOverride, setStatusOverride] = useState<boolean | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    data?.image ?? null
+  );
   const isPublic = statusOverride ?? data?.isPublic ?? true;
 
   // Fetch users not in this department (only when editing)
-  const { users: _usersNotInDepartment } = useUsersNotInDepartment(
-    type === 'edit' && data?.id ? data.id : null
-  );
   //form schema
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useForm<DepartmentFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: data?.name ?? '',
       description: data?.description ?? '',
+      image: data?.image ?? '',
     },
   });
 
@@ -78,23 +88,62 @@ export default function DepartmentForm({
     setStatusOverride(selectedKey === 'true');
   };
 
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
+  };
+
   //submit
   const onSubmit = async (values: DepartmentFormValues) => {
+    let finalImageUrl = avatarUrl || values.image || '';
+
+    // Upload avatar first if a new file was selected
+    if (selectedFile) {
+      // Get old avatar URL before uploading new one
+      const oldAvatarUrl = avatarUrl || data?.image || null;
+      const uploadResponse = await uploadAvatar(selectedFile, oldAvatarUrl);
+      if (uploadResponse?.success && uploadResponse.data?.url) {
+        finalImageUrl = uploadResponse.data.url;
+        setAvatarUrl(finalImageUrl);
+        setValue('image', finalImageUrl); // Update form value
+        setSelectedFile(null); // Clear selected file after successful upload
+      } else {
+        // If upload failed, don't proceed with department create/update
+        return;
+      }
+    }
+
     const sanitizedValues = {
       name: values.name,
       description: values.description ?? '',
+      image: finalImageUrl,
     };
     const payload = {
       ...sanitizedValues,
       isPublic,
     };
 
-    const response =
-      type === 'create'
-        ? await createDepartment(payload)
-        : data?.id
-          ? await updateDepartment({ id: data.id, ...payload })
-          : null;
+    let response = null;
+    try {
+      response =
+        type === 'create'
+          ? await createDepartment(payload)
+          : data?.id
+            ? await updateDepartment({ id: data.id, ...payload })
+            : null;
+    } catch (err) {
+      const fetchError = err as FetchError<{ error?: string }>;
+      if (fetchError?.status === 409) {
+        toast.error(t('nameExists'));
+      } else if (fetchError?.status === 403) {
+        toast.error(t('permissionDenied'));
+      } else {
+        console.error('Department submit failed', err);
+        toast.error(
+          type === 'create' ? t('createFailed') : tEdit('editFailed')
+        );
+      }
+      return;
+    }
     if (!response) {
       toast.error(t('createFailed'));
       return;
@@ -105,9 +154,11 @@ export default function DepartmentForm({
       );
       if (type === 'create') {
         reset();
-      } else {
-        router.refresh();
+        setAvatarUrl(null);
+        setSelectedFile(null);
       }
+      router.push(PAGE_ROUTES.DEPARTMENT_LIST);
+      router.refresh();
     } else {
       console.log('error', error);
       toast.error(type === 'create' ? t('createFailed') : tEdit('editFailed'));
@@ -115,7 +166,11 @@ export default function DepartmentForm({
   };
 
   //loading
-  const isLoading = isCreating || isSubmitting || isUpdating;
+  const isLoading =
+    isCreating || isSubmitting || isUpdating || isUploadingAvatar;
+
+  // Display avatar - use preview from selected file, then avatarUrl, then form value, then data
+  const displayAvatar = avatarUrl || data?.image || '';
 
   const statusOptions = [
     {
@@ -174,6 +229,20 @@ export default function DepartmentForm({
                 onValueChange={field.onChange}
                 isInvalid={Boolean(errors.description)}
                 errorMessage={errors.description?.message}
+              />
+            )}
+          />
+          <Spacer y={6} />
+          {/* Img */}
+          <Controller
+            name="image"
+            control={control}
+            render={({ field: _field }) => (
+              <AvatarUpload
+                avatar={displayAvatar}
+                onFileSelect={handleFileSelect}
+                isLoading={isUploadingAvatar}
+                defaultImg={defaultDepartment.src}
               />
             )}
           />

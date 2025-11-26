@@ -11,10 +11,16 @@
     "edit": "Sửa",
     "view": "Xem",
     "create": "Tạo",
-    "save": "Lưu"
+    "save": "Lưu",
+    "duplicate": "Sao chép",
+    "home": "Trang chủ",
+    "course": "Khóa học",
+    "courseInDepartment": "Khóa học trong phòng ban",
+    "courseList": "Danh sách khóa học"
   },
   "sidebar": {
     "home": "Trang chủ",
+    "departments": "Phòng ban",
     "courses": "Danh sách khóa học",
     "management": {
       "heading": "Quản lý",
@@ -120,6 +126,8 @@
       "descriptionPlaceholder": "Nhập mô tả phòng ban",
       "createSuccess": "Tạo phòng ban thành công",
       "createFailed": "Tạo phòng ban thất bại",
+      "nameExists": "Tên phòng ban đã tồn tại",
+      "permissionDenied": "Bạn không có quyền thực hiện hành động này",
       "validation": {
         "nameRequired": "Tên phòng ban là bắt buộc",
         "nameMaxLength": "Tên phòng ban không được vượt quá {max} ký tự"
@@ -152,6 +160,7 @@
       "title": "Cột",
       "id": "ID",
       "name": "Tên",
+      "image": "Ảnh",
       "description": "Mô tả",
       "actions": "Thao tác",
       "createdAt": "Ngày tạo",
@@ -320,6 +329,60 @@
         "passwordMismatch": "Mật khẩu không khớp",
         "samePassword": "Mật khẩu mới phải khác với mật khẩu hiện tại"
       }
+    }
+  },
+  "CoursePage": {
+    "courseForm": {
+      "name": "Tên khóa học",
+      "namePlaceholder": "Nhập tên khóa học",
+      "description": "Mô tả",
+      "descriptionPlaceholder": "Nhập mô tả khóa học",
+      "create": "Tạo",
+      "saveChanges": "Lưu thay đổi",
+      "createSuccess": "Tạo khóa học thành công",
+      "editSuccess": "Cập nhật khóa học thành công",
+      "submitFailed": "Gửi thông tin khóa học thất bại",
+      "validation": {
+        "nameRequired": "Tên khóa học là bắt buộc"
+      }
+    },
+    "createCourse": {
+      "title": "Tạo khóa học",
+      "description": "Tạo mới một khóa học"
+    },
+    "editCourse": {
+      "title": "Sửa khóa học",
+      "description": "Chỉnh sửa thông tin khóa học"
+    },
+    "courseList": {
+      "title": "Danh sách khóa học",
+      "description": "Quản lý khóa học trong phòng ban",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa khóa học này không?",
+      "confirmBulkDelete": "Bạn có chắc chắn muốn xóa {count} khóa học không?",
+      "deleteSuccess": "Xóa khóa học thành công",
+      "deleteFailed": "Xóa khóa học thất bại",
+      "bulkDeleteSuccess": "Đã xóa {count} khóa học thành công",
+      "bulkDeleteFailed": "Xóa các khóa học đã chọn thất bại"
+    },
+    "courseInDepartment": {
+      "title": "Khóa học trong phòng ban",
+      "description": "Quản lý khóa học theo phòng ban"
+    },
+    "title": "Khóa học",
+    "description": "Quản lý khóa học theo phòng ban",
+    "sections": {
+      "public": {
+        "title": "Phòng ban công khai",
+        "description": "Hiển thị cho tất cả người dùng",
+        "empty": "Không có phòng ban công khai nào."
+      },
+      "private": {
+        "title": "Phòng ban riêng tư",
+        "description": "Chỉ một số người dùng có thể truy cập",
+        "empty": "Không có phòng ban riêng tư nào."
+      },
+      "countLabel": "{count, plural, one {# phòng ban} other {# phòng ban}}",
+      "noDescription": "Chưa có mô tả."
     }
   }
 }

@@ -51,6 +51,7 @@ export interface DataTableProps<T extends DataRow = DataRow> {
   defaultRowsPerPage?: number;
   getRowKey?: (item: T) => string | number;
   showCheckBox?: boolean;
+  showSearch?: boolean;
 }
 
 export function capitalize(s: string) {
@@ -217,6 +218,7 @@ export default function DataTable<T extends DataRow = DataRow>({
   defaultRowsPerPage = 5,
   getRowKey = defaultGetRowKey,
   showCheckBox = true,
+  showSearch = true,
 }: DataTableProps<T>) {
   const tDataTable = useTranslations('DataTable');
   const resolvedSearchPlaceholder =
@@ -442,15 +444,17 @@ export default function DataTable<T extends DataRow = DataRow>({
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-end justify-between gap-3">
-          <Input
-            isClearable
-            className="w-full sm:max-w-[44%]"
-            placeholder={resolvedSearchPlaceholder}
-            startContent={<SearchIcon />}
-            value={filterValue}
-            onClear={() => onClear()}
-            onValueChange={onSearchChange}
-          />
+          {showSearch && (
+            <Input
+              isClearable
+              className="w-full sm:max-w-[44%]"
+              placeholder={resolvedSearchPlaceholder}
+              startContent={<SearchIcon />}
+              value={filterValue}
+              onClear={() => onClear()}
+              onValueChange={onSearchChange}
+            />
+          )}
           <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
@@ -525,6 +529,7 @@ export default function DataTable<T extends DataRow = DataRow>({
     resolvedSearchPlaceholder,
     rowsPerPage,
     rowsPerPageOptions,
+    showSearch,
     tDataTable,
     visibleColumns,
   ]);

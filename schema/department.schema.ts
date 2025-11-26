@@ -16,6 +16,7 @@ export const createDepartmentSchema = (t: TranslationFunction) => {
         t('validation.nameMaxLength', { max: DEPARTMENT_MAX_LENGTH })
       ),
     description: z.string().optional(),
+    image: z.string().optional(),
   });
 };
 

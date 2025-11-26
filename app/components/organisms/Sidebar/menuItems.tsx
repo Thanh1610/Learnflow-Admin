@@ -4,6 +4,7 @@ import { USER_ROLES } from '@/config/constants';
 import { PAGE_ROUTES } from '@/config/pageRoutes';
 import {
   BarChart,
+  Book,
   Building,
   FileText,
   HelpCircle,
@@ -59,8 +60,13 @@ export async function getMenuItems(
       label: t('home'),
     },
     {
-      href: '/courses',
+      href: PAGE_ROUTES.COURSE_IN_DEPARTMENT,
       icon: <FileText className="h-5 w-5" />,
+      label: t('departments'),
+    },
+    {
+      href: PAGE_ROUTES.COURSE_LIST,
+      icon: <Book className="h-5 w-5" />,
       label: t('courses'),
     },
     {

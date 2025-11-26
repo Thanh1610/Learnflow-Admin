@@ -119,8 +119,8 @@ export async function POST(
       query GetDepartmentUserIds($departmentId: Int!) {
         _UserDepartments(where: { B: { _eq: $departmentId } }) {
           A
+          }
         }
-      }
     `;
 
     const allActiveUsersQuery = `
